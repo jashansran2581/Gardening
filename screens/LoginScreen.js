@@ -1,12 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  TextInput,
-  Pressable,
-} from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TextInput, Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { auth, db, signInWithGooglePopup } from "../firebase";
@@ -32,7 +24,6 @@ const LoginScreen = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      // await signInWithGooglePopup();
       const result = await signInWithGooglePopup();
       const user = result.user;
 
@@ -46,7 +37,6 @@ const LoginScreen = () => {
         uid: user.uid,
       });
 
-      navigation.replace("Main");
       console.log("User logged in via Google: ", user);
       navigation.replace("Main"); // Redirect after successful login
     } catch (error) {
@@ -98,13 +88,9 @@ const LoginScreen = () => {
           <Text style={styles.loginButtonText}>Continue</Text>
         </Pressable>
 
-        <Pressable
-          onPress={() => navigation.navigate("Register")}
-          style={styles.signupTextContainer}
-        >
+        <Pressable onPress={() => navigation.navigate("Register")} style={styles.signupTextContainer}>
           <Text style={styles.signupText}>
-            Don't have an account?{" "}
-            <Text style={styles.signupLink}>Sign Up</Text>
+            Don't have an account? <Text style={styles.signupLink}>Sign Up</Text>
           </Text>
         </Pressable>
 

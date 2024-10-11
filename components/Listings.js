@@ -1,136 +1,146 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useRef, useState } from "react";
-import { useNavigation } from "@react-navigation/native";  // Import from React Navigation
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { db } from '../firebase';
+import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
-const Listings = ({ listings: items, refresh, category }) => {
-  const listRef = useRef(null);
-  const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();  // Initialize navigation
+const Listings = () => {
+  const [listings, setListings] = useState([]);
+  const [savedListingsIds, setSavedListingsIds] = useState([]); // to store the IDs of saved listings
+  const navigation = useNavigation();
 
   useEffect(() => {
-    if (refresh) {
-      scrollListTop();
-    }
-  }, [refresh]);
+    // Fetch listings once
+    const fetchListings = async () => {
+      const unsubscribe = onSnapshot(collection(db, 'listings'), (querySnapshot) => {
+        const listingsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setListings(listingsData);
+      });
 
-  const scrollListTop = () => {
-    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+      return () => unsubscribe(); // Clean up the listener on unmount
+    };
+
+    fetchListings();
+
+    // Listen for changes to saved listings
+    const unsubscribeSaved = onSnapshot(collection(db, 'savedListings'), (snapshot) => {
+      const savedIds = snapshot.docs.map((doc) => doc.id);
+      setSavedListingsIds(savedIds); // Update the saved listing IDs
+    });
+
+    return () => unsubscribeSaved(); // Clean up the listener on unmount
+  }, []);
+
+  const toggleSaveListing = async (item) => {
+    const isSaved = savedListingsIds.includes(item.id);
+    try {
+      if (isSaved) {
+        await deleteDoc(doc(db, 'savedListings', item.id));
+      } else {
+        await setDoc(doc(db, 'savedListings', item.id), item);
+      }
+    } catch (error) {
+      console.error('Error saving/unsaving listing:', error);
+    }
   };
 
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 200);
-  }, [category]);
-
-  const renderRow = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Details', { item })} style={styles.listing}>
-      <Image
-        source={{ uri: item.medium_url }}
-        style={styles.image}
-      />
-      <TouchableOpacity style={styles.heartIcon}>
-        <Ionicons name="heart-outline" size={24} color="#000" />
-      </TouchableOpacity>
-      <View style={styles.listingDetails}>
-        <Text style={styles.listingName}>{item.name}</Text>
-        <View style={styles.ratingContainer}>
-          <Ionicons name="star" size={16} color="#FFD700" />
-          <Text style={styles.ratingText}>
-            {item.review_scores_rating / 20}
-          </Text>
-        </View>
-      </View>
-      <Text style={styles.roomType}>{item.room_type}</Text>
-      <View style={styles.priceContainer}>
-        <Text style={styles.price}>€ {item.price}</Text>
-        <Text style={styles.pricePerNight}>/ night</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
   return (
-    <View style={styles.container}>
-      <FlatList
-        renderItem={renderRow}
-        data={loading ? [] : items}
-        ref={listRef}
-      />
-    </View>
+    <ScrollView style={styles.container}>
+      {listings.map((item) => (
+        <TouchableOpacity
+          key={item.id}
+          onPress={() => navigation.navigate('Details', { item })}
+          style={styles.listing}
+        >
+          <Image source={{ uri: item.medium_url }} style={styles.image} />
+          
+          {/* Heart icon */}
+          <TouchableOpacity style={styles.heartIcon} onPress={() => toggleSaveListing(item)}>
+            <Ionicons
+              name={savedListingsIds.includes(item.id) ? "heart" : "heart-outline"}
+              size={24}
+              color={savedListingsIds.includes(item.id) ? "red" : "#000"}
+            />
+          </TouchableOpacity>
+          
+          {/* Listing details */}
+          <View style={styles.listingDetails}>
+            <Text style={styles.listingName}>{item.name}</Text>
+            <View style={styles.ratingContainer}>
+              <Ionicons name="star" size={16} color="#FFD700" />
+              <Text style={styles.ratingText}>{item.review_scores_rating / 20}</Text>
+            </View>
+          </View>
+          <Text style={styles.roomType}>{item.room_type}</Text>
+          <View style={styles.priceContainer}>
+            <Text style={styles.price}>€ {item.price}</Text>
+            <Text style={styles.pricePerNight}>/ night</Text>
+          </View>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
   },
   listing: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 1, height: 1 },
-    elevation: 2,
+    marginBottom: 24,
+    position: "relative",
   },
   image: {
     width: "100%",
     height: 200,
-    borderRadius: 10,
+    borderRadius: 8,
   },
   heartIcon: {
     position: "absolute",
-    right: 16,
-    top: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-    borderRadius: 50,
-    padding: 8,
+    top: 10,
+    right: 10,
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 4,
   },
   listingDetails: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 10,
+    marginTop: 8,
   },
   listingName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
   },
   ratingContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    marginTop: 4,
   },
   ratingText: {
+    marginLeft: 4,
     fontSize: 14,
-    color: "#333",
+    color: "#666",
   },
   roomType: {
-    fontSize: 14,
-    color: "#777",
-    marginVertical: 4,
+    marginTop: 4,
+    color: "#666",
   },
   priceContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
+    marginTop: 4,
   },
   price: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
   },
   pricePerNight: {
     fontSize: 14,
-    color: "#777",
-    marginLeft: 4,
+    color: "#666",
   },
 });
 

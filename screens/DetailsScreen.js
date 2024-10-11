@@ -1,50 +1,43 @@
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Button } from "react-native";
-import React, { useLayoutEffect } from "react";
-import { useRoute, useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import React from 'react';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-const DetailsScreen = () => {
-  const route = useRoute();
+const DetailsScreen = ({ route }) => {
   const { item } = route.params;
-  const navigation = useNavigation();
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="black" />
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <TouchableOpacity>
-          <Ionicons name="heart-outline" size={24} color="black" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
   return (
     <View style={styles.screenContainer}>
       <ScrollView style={styles.container}>
+        {/* Main image */}
         <Image source={{ uri: item.medium_url }} style={styles.image} />
+
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{item.name}</Text>
-          <Text style={styles.location}>Private room in Berlin, Germany</Text>
-          <Text style={styles.guests}>1 guest • 1 bedroom • 1 bed • 1 bathroom</Text>
+          <Text style={styles.location}>Private room in {item.city}, {item.country}</Text>
+          <Text style={styles.guests}>
+            {item.accommodates} guest{item.accommodates > 1 ? 's' : ''} • {item.bedrooms} bedroom • {item.beds} bed • {item.bathrooms} bathroom
+          </Text>
+
+          {/* Reviews */}
           <View style={styles.reviewsContainer}>
             <Ionicons name="star" size={16} color="#FFD700" />
-            <Text style={styles.reviewsText}>4.8 • 71 reviews</Text>
+            <Text style={styles.reviewsText}>
+              {(item.review_scores_rating / 20).toFixed(1)} • {item.number_of_reviews} reviews
+            </Text>
           </View>
 
+          {/* Host info */}
           <View style={styles.hostContainer}>
             <Image source={{ uri: item.host_picture_url }} style={styles.host} />
             <View style={styles.hostInfo}>
               <Text style={styles.hostedBy}>Hosted by {item.host_name}</Text>
-              <Text style={styles.hostDate}>Host since {item.host_start_date}</Text>
+              <Text style={styles.hostDate}>Host since {item.host_since}</Text>
             </View>
           </View>
 
+          {/* Description */}
           <Text style={styles.description}>{item.description}</Text>
 
+          {/* Additional details */}
           <View style={styles.detailsContainer}>
             <Text style={styles.detailLabel}>Space:</Text>
             <Text style={styles.detailValue}>{item.space}</Text>
@@ -55,13 +48,15 @@ const DetailsScreen = () => {
             <Text style={styles.detailValue}>{item.neighborhood_overview}</Text>
           </View>
 
+          {/* Amenities */}
           <View style={styles.detailsContainer}>
             <Text style={styles.detailLabel}>Amenities:</Text>
-            <Text style={styles.detailValue}>{item.amenities.join(", ")}</Text>
+            <Text style={styles.detailValue}>{item.amenities.join(', ')}</Text>
           </View>
         </View>
       </ScrollView>
 
+      {/* Footer with price and Reserve button */}
       <View style={styles.footer}>
         <Text style={styles.price}>€{item.price} / night</Text>
         <TouchableOpacity style={styles.reserveButton}>
@@ -77,109 +72,96 @@ export default DetailsScreen;
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
-    padding:10,
   },
   container: {
-    backgroundColor: "#fff",
-  },
-  image: {
-    width: "100%",
-    height: 300,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  infoContainer: {
+    flex: 1,
     padding: 16,
   },
+  image: {
+    width: '100%',
+    height: 300,
+    borderRadius: 8,
+  },
+  infoContainer: {
+    marginTop: 16,
+  },
   title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginVertical: 10,
-    color: "#333",
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   location: {
-    fontSize: 16,
-    color: "#777",
-    marginBottom: 5,
+    marginTop: 8,
+    color: '#666',
   },
   guests: {
-    fontSize: 14,
-    color: "#777",
+    marginTop: 8,
+    color: '#666',
   },
   reviewsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
   },
   reviewsText: {
+    marginLeft: 4,
     fontSize: 14,
-    color: "#777",
-    marginLeft: 5,
+    color: '#666',
   },
   hostContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
   },
   host: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   hostInfo: {
-    flexDirection: "column",
+    marginLeft: 16,
   },
   hostedBy: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: 'bold',
   },
   hostDate: {
-    fontSize: 14,
-    color: "#777",
+    color: '#666',
   },
   description: {
+    marginTop: 16,
     fontSize: 16,
-    color: "#555",
-    marginVertical: 10,
   },
   detailsContainer: {
-    marginVertical: 10,
+    marginTop: 16,
   },
   detailLabel: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: 'bold',
   },
   detailValue: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: 5,
+    fontSize: 16,
+    color: '#666',
+    marginTop: 4,
   },
   footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: "#ddd",
-    backgroundColor: "#fff",
+    borderTopColor: '#eee',
   },
   price: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   reserveButton: {
-    backgroundColor: "#FF385C",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
+    backgroundColor: '#ff5a5f',
+    borderRadius: 8,
+    padding: 12,
   },
   reserveText: {
+    color: '#fff',
     fontSize: 16,
-    color: "#fff",
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
