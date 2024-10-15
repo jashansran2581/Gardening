@@ -163,17 +163,282 @@
 //   },
 // });
 
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, ScrollView, Pressable, SafeAreaView, Alert, ActivityIndicator } from 'react-native';
+import { db } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 
-const BookingScreen = () => {
+const ListingForm = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    city: '',
+    country: '',
+    accommodates: '',
+    bedrooms: '',
+    beds: '',
+    bathrooms: '',
+    price: '',
+    medium_url: '',
+    host_name: '',
+    host_picture_url: '',
+    host_since: '',
+    description: '',
+    space: '',
+    neighborhood_overview: '',
+    amenities: [],
+    review_scores_rating: '',
+    number_of_reviews: '',
+    room_type: '',
+  });
+
+  const [amenity, setAmenity] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
+
+  const handleAddAmenity = () => {
+    if (amenity.trim()) {
+      setFormData({ ...formData, amenities: [...formData.amenities, amenity] });
+      setAmenity('');
+    }
+  };
+
+  const handleFormSubmit = async () => {
+    // Basic Validation
+    if (!formData.name || !formData.city || !formData.country || !formData.price || !formData.description) {
+      Alert.alert("Missing Information", "Please fill in all required fields.");
+      return;
+    }
+
+    setLoading(true); // Start loading
+    try {
+      await addDoc(collection(db, 'listings'), {
+        ...formData,
+        accommodates: parseInt(formData.accommodates),
+        bedrooms: parseInt(formData.bedrooms),
+        beds: parseInt(formData.beds),
+        bathrooms: parseInt(formData.bathrooms),
+        price: parseFloat(formData.price),
+        review_scores_rating: parseFloat(formData.review_scores_rating),
+        number_of_reviews: parseInt(formData.number_of_reviews),
+      });
+      navigation.goBack();
+    } catch (error) {
+      console.log("Error adding listing:", error);
+      Alert.alert("Error", "Failed to create listing. Please try again.");
+    }
+    setLoading(false); // End loading
+  };
+
   return (
-    <View>
-      <Text>BookingScreen</Text>
-    </View>
-  )
-}
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.formContainer}>
+          <Text style={styles.title}>Create a Listing</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={formData.name}
+            onChangeText={(text) => setFormData({ ...formData, name: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="City"
+            value={formData.city}
+            onChangeText={(text) => setFormData({ ...formData, city: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Country"
+            value={formData.country}
+            onChangeText={(text) => setFormData({ ...formData, country: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Accommodates"
+            keyboardType="numeric"
+            value={formData.accommodates}
+            onChangeText={(text) => setFormData({ ...formData, accommodates: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Bedrooms"
+            keyboardType="numeric"
+            value={formData.bedrooms}
+            onChangeText={(text) => setFormData({ ...formData, bedrooms: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Beds"
+            keyboardType="numeric"
+            value={formData.beds}
+            onChangeText={(text) => setFormData({ ...formData, beds: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Bathrooms"
+            keyboardType="numeric"
+            value={formData.bathrooms}
+            onChangeText={(text) => setFormData({ ...formData, bathrooms: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Price (in EUR)"
+            keyboardType="numeric"
+            value={formData.price}
+            onChangeText={(text) => setFormData({ ...formData, price: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Image URL"
+            value={formData.medium_url}
+            onChangeText={(text) => setFormData({ ...formData, medium_url: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Host Name"
+            value={formData.host_name}
+            onChangeText={(text) => setFormData({ ...formData, host_name: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Host Picture URL"
+            value={formData.host_picture_url}
+            onChangeText={(text) => setFormData({ ...formData, host_picture_url: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Host Since (YYYY-MM-DD)"
+            value={formData.host_since}
+            onChangeText={(text) => setFormData({ ...formData, host_since: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Description"
+            value={formData.description}
+            onChangeText={(text) => setFormData({ ...formData, description: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Space"
+            value={formData.space}
+            onChangeText={(text) => setFormData({ ...formData, space: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Neighborhood Overview"
+            value={formData.neighborhood_overview}
+            onChangeText={(text) => setFormData({ ...formData, neighborhood_overview: text })}
+          />
+          
+          <View style={styles.amenitiesContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Add Amenity"
+              value={amenity}
+              onChangeText={setAmenity}
+            />
+            <Pressable onPress={handleAddAmenity} style={styles.addButton}>
+              <Text style={styles.buttonText}>Add</Text>
+            </Pressable>
+          </View>
+          
+          <Text style={styles.amenitiesText}>Amenities: {formData.amenities.join(', ')}</Text>
 
-export default BookingScreen
+          <TextInput
+            style={styles.input}
+            placeholder="Review Score (0-100)"
+            keyboardType="numeric"
+            value={formData.review_scores_rating}
+            onChangeText={(text) => setFormData({ ...formData, review_scores_rating: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Number of Reviews"
+            keyboardType="numeric"
+            value={formData.number_of_reviews}
+            onChangeText={(text) => setFormData({ ...formData, number_of_reviews: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Room Type"
+            value={formData.room_type}
+            onChangeText={(text) => setFormData({ ...formData, room_type: text })}
+          />
 
-const styles = StyleSheet.create({})
+          <Pressable 
+            onPress={handleFormSubmit} 
+            style={styles.submitButton} 
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Create Listing</Text>
+            )}
+          </Pressable>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default ListingForm;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f4f7',
+    padding: 20,
+  },
+  scrollContainer: {
+    alignItems: 'center',
+    flexGrow: 1,
+  },
+  formContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 15,
+    width: '100%',
+    maxWidth: 350,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  input: {
+    backgroundColor: '#f2f2f2',
+    padding: 12,
+    borderRadius: 10,
+    marginVertical: 10,
+    fontSize: 16,
+  },
+  addButton: {
+    backgroundColor: '#003580',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  amenitiesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  amenitiesText: {
+    fontSize: 14,
+    marginVertical: 10,
+  },
+  submitButton: {
+    backgroundColor: '#003580',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
