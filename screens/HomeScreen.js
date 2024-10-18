@@ -1,9 +1,8 @@
-import { View } from "react-native";
 import React, { useMemo, useState } from "react";
-import listingsData from "../data/airbnb-listings.json";
+import { View } from "react-native";
 import ExploreHeader from "../components/ExploreHeader";
 import Listings from "../components/Listings";
-import Map from "../components/mapsearch";
+import listingsData from "../data/airbnb-listings.json";
 
 const Page = () => {
   const items = useMemo(() => listingsData, []);
@@ -14,8 +13,7 @@ const Page = () => {
   return (
     <View style={{ flex: 1}}>
       <ExploreHeader />
-      <Listings listings={items} category={category} refresh={0} />  
-      <Map/>
+      <Listings listings={items} category={category} refresh={0} />
     </View>
   );
 };
