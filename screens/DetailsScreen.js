@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const DetailsScreen = ({ route }) => {
   const { item } = route.params;
+
   return (
     <View style={styles.screenContainer}>
       <ScrollView style={styles.container}>
@@ -12,25 +13,24 @@ const DetailsScreen = ({ route }) => {
 
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{item.name}</Text>
-          <Text style={styles.location}>Private room in {item.city}, {item.country}</Text>
+          <Text style={styles.location}>Private room in {item.location}</Text>
           <Text style={styles.guests}>
-            {item.accommodates} guest{item.accommodates > 1 ? 's' : ''} • {item.bedrooms} bedroom • {item.beds} bed • {item.bathrooms} bathroom
+            {item.max_guests} guest{item.max_guests > 1 ? 's' : ''} • Minimum stay: {item.min_booking_days} days
           </Text>
 
           {/* Reviews */}
           <View style={styles.reviewsContainer}>
             <Ionicons name="star" size={16} color="#FFD700" />
             <Text style={styles.reviewsText}>
-              {(item.review_scores_rating / 20).toFixed(1)} • {item.number_of_reviews} reviews
+              {item.rating} • {item.number_of_reviews} reviews
             </Text>
           </View>
 
           {/* Host info */}
           <View style={styles.hostContainer}>
-            <Image source={{ uri: item.host_picture_url }} style={styles.host} />
             <View style={styles.hostInfo}>
               <Text style={styles.hostedBy}>Hosted by {item.host_name}</Text>
-              <Text style={styles.hostDate}>Host since {item.host_since}</Text>
+              <Text style={styles.hostContact}>Contact: {item.host_contact}</Text>
             </View>
           </View>
 
@@ -39,20 +39,21 @@ const DetailsScreen = ({ route }) => {
 
           {/* Additional details */}
           <View style={styles.detailsContainer}>
-            <Text style={styles.detailLabel}>Space:</Text>
-            <Text style={styles.detailValue}>{item.space}</Text>
-          </View>
-
-          <View style={styles.detailsContainer}>
-            <Text style={styles.detailLabel}>Neighborhood Overview:</Text>
-            <Text style={styles.detailValue}>{item.neighborhood_overview}</Text>
-          </View>
-
-          {/* Amenities */}
-          <View style={styles.detailsContainer}>
             <Text style={styles.detailLabel}>Amenities:</Text>
-            <Text style={styles.detailValue}>{item.amenities.join(', ')}</Text>
+            <Text style={styles.detailValue}>{item.amenities}</Text>
           </View>
+
+          <View style={styles.detailsContainer}>
+            <Text style={styles.detailLabel}>Availability:</Text>
+            <Text style={styles.detailValue}>{item.availability}</Text>
+          </View>
+
+          <View style={styles.detailsContainer}>
+            <Text style={styles.detailLabel}>Accessibility:</Text>
+            <Text style={styles.detailValue}>{item.accessibility}</Text>
+          </View>
+          
+          {/* Other details can be added similarly */}
         </View>
       </ScrollView>
 
@@ -112,11 +113,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
   },
-  host: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-  },
   hostInfo: {
     marginLeft: 16,
   },
@@ -124,7 +120,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  hostDate: {
+  hostContact: {
     color: '#666',
   },
   description: {

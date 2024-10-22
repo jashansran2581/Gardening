@@ -162,283 +162,363 @@
 //     alignItems: 'center',
 //   },
 // });
+// import React, { useState } from 'react';
+// import { StyleSheet, Text, View, TextInput, ScrollView, Pressable, SafeAreaView, Alert, ActivityIndicator } from 'react-native';
+// import { db } from '../firebase';
+// import { collection, addDoc } from 'firebase/firestore';
+// import { useNavigation } from '@react-navigation/native';
+
+// const ListingForm = () => {
+//   const [formData, setFormData] = useState({
+//     name: '',
+//     location: '',
+//     description: '',
+//     rating: '',
+//     price: '',
+//     amenities: '',
+//     host_name: '',
+//     host_contact: '',
+//     email: '',
+//     availability: '',
+//     category: '',
+//     accessibility: '',
+//     max_guests: '',
+//     min_booking_days: '',
+//     soil_type: '',
+//     water_source: '',
+//     sunlight_exposure: '',
+//     parking_availability: '',
+//     tools_included: '',
+//     medium_url: '',
+//   });
+
+//   const [loading, setLoading] = useState(false);
+//   const navigation = useNavigation();
+
+//   const handleFormSubmit = async () => {
+//     // Basic Validation
+//     if (!formData.name || !formData.location || !formData.description || !formData.price) {
+//       Alert.alert("Missing Information", "Please fill in all required fields.");
+//       return;
+//     }
+
+//     setLoading(true); // Start loading
+//     try {
+//       await addDoc(collection(db, 'listings'), {
+//         ...formData,
+//         rating: parseFloat(formData.rating),
+//         price: parseFloat(formData.price),
+//         max_guests: parseInt(formData.max_guests),
+//         min_booking_days: parseInt(formData.min_booking_days),
+//       });
+//       navigation.goBack();
+//     } catch (error) {
+//       console.log("Error adding listing:", error);
+//       Alert.alert("Error", "Failed to create listing. Please try again.");
+//     }
+//     setLoading(false); // End loading
+//   };
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <ScrollView contentContainerStyle={styles.scrollContainer}>
+//         <View style={styles.formContainer}>
+//           <Text style={styles.title}>Create a Listing</Text>
+
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Name"
+//             value={formData.name}
+//             onChangeText={(text) => setFormData({ ...formData, name: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Location"
+//             value={formData.location}
+//             onChangeText={(text) => setFormData({ ...formData, location: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Description"
+//             value={formData.description}
+//             onChangeText={(text) => setFormData({ ...formData, description: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Rating (0-5)"
+//             keyboardType="numeric"
+//             value={formData.rating}
+//             onChangeText={(text) => setFormData({ ...formData, rating: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Price (in EUR)"
+//             keyboardType="numeric"
+//             value={formData.price}
+//             onChangeText={(text) => setFormData({ ...formData, price: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Amenities"
+//             value={formData.amenities}
+//             onChangeText={(text) => setFormData({ ...formData, amenities: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Host Name"
+//             value={formData.host_name}
+//             onChangeText={(text) => setFormData({ ...formData, host_name: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Host Contact"
+//             value={formData.host_contact}
+//             onChangeText={(text) => setFormData({ ...formData, host_contact: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Email"
+//             value={formData.email}
+//             onChangeText={(text) => setFormData({ ...formData, email: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Availability"
+//             value={formData.availability}
+//             onChangeText={(text) => setFormData({ ...formData, availability: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Category"
+//             value={formData.category}
+//             onChangeText={(text) => setFormData({ ...formData, category: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Accessibility"
+//             value={formData.accessibility}
+//             onChangeText={(text) => setFormData({ ...formData, accessibility: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Max Guests"
+//             keyboardType="numeric"
+//             value={formData.max_guests}
+//             onChangeText={(text) => setFormData({ ...formData, max_guests: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Min Booking Days"
+//             keyboardType="numeric"
+//             value={formData.min_booking_days}
+//             onChangeText={(text) => setFormData({ ...formData, min_booking_days: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Soil Type"
+//             value={formData.soil_type}
+//             onChangeText={(text) => setFormData({ ...formData, soil_type: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Water Source"
+//             value={formData.water_source}
+//             onChangeText={(text) => setFormData({ ...formData, water_source: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Sunlight Exposure"
+//             value={formData.sunlight_exposure}
+//             onChangeText={(text) => setFormData({ ...formData, sunlight_exposure: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Parking Availability"
+//             value={formData.parking_availability}
+//             onChangeText={(text) => setFormData({ ...formData, parking_availability: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Tools Included"
+//             value={formData.tools_included}
+//             onChangeText={(text) => setFormData({ ...formData, tools_included: text })}
+//           />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Image URL"
+//             value={formData.medium_url}
+//             onChangeText={(text) => setFormData({ ...formData, medium_url: text })}
+//           />
+
+//           <Pressable 
+//             onPress={handleFormSubmit} 
+//             style={styles.submitButton} 
+//             disabled={loading}
+//           >
+//             {loading ? (
+//               <ActivityIndicator color="#fff" />
+//             ) : (
+//               <Text style={styles.buttonText}>Create Listing</Text>
+//             )}
+//           </Pressable>
+//         </View>
+//       </ScrollView>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default ListingForm;
+
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#f0f4f7',
+//     padding: 20,
+//   },
+//   scrollContainer: {
+//     alignItems: 'center',
+//     flexGrow: 1,
+//   },
+//   formContainer: {
+//     backgroundColor: '#fff',
+//     padding: 20,
+//     borderRadius: 15,
+//     width: '100%',
+//     maxWidth: 350,
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: '700',
+//     marginBottom: 15,
+//     textAlign: 'center',
+//   },
+//   input: {
+//     backgroundColor: '#f2f2f2',
+//     padding: 12,
+//     borderRadius: 10,
+//     marginVertical: 10,
+//     fontSize: 16,
+//   },
+//   submitButton: {
+//     backgroundColor: '#003580',
+//     padding: 15,
+//     borderRadius: 10,
+//     marginTop: 20,
+//   },
+//   buttonText: {
+//     color: '#fff',
+//     textAlign: 'center',
+//     fontSize: 16,
+//     fontWeight: '600',
+//   },
+// });
+
+
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView, Pressable, SafeAreaView, Alert, ActivityIndicator } from 'react-native';
-import { db } from '../firebase';
-import { collection, addDoc } from 'firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
+import { View, Button, Image, Alert, Text } from 'react-native';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; // Import necessary Firebase Storage methods
+import { launchImageLibrary } from 'react-native-image-picker';
+import { v4 as uuidv4 } from 'uuid';
 
-const ListingForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    city: '',
-    country: '',
-    accommodates: '',
-    bedrooms: '',
-    beds: '',
-    bathrooms: '',
-    price: '',
-    medium_url: '',
-    host_name: '',
-    host_picture_url: '',
-    host_since: '',
-    description: '',
-    space: '',
-    neighborhood_overview: '',
-    amenities: [],
-    review_scores_rating: '',
-    number_of_reviews: '',
-    room_type: '',
-  });
+function FirebaseImageUpload() {
+  const [imgUri, setImgUri] = useState(null);  // For selected image URI
+  const [downloadUrl, setDownloadUrl] = useState(null); // For uploaded image URL
+  const [uploading, setUploading] = useState(false); // For showing upload progress
+  const [progress, setProgress] = useState(0); // Progress for upload
 
-  const [amenity, setAmenity] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();
-
-  const handleAddAmenity = () => {
-    if (amenity.trim()) {
-      setFormData({ ...formData, amenities: [...formData.amenities, amenity] });
-      setAmenity('');
-    }
-  };
-
-  const handleFormSubmit = async () => {
-    // Basic Validation
-    if (!formData.name || !formData.city || !formData.country || !formData.price || !formData.description) {
-      Alert.alert("Missing Information", "Please fill in all required fields.");
+  const handleClick = () => {
+    if (!imgUri) {
+      Alert.alert('No image selected');
       return;
     }
 
-    setLoading(true); // Start loading
-    try {
-      await addDoc(collection(db, 'listings'), {
-        ...formData,
-        accommodates: parseInt(formData.accommodates),
-        bedrooms: parseInt(formData.bedrooms),
-        beds: parseInt(formData.beds),
-        bathrooms: parseInt(formData.bathrooms),
-        price: parseFloat(formData.price),
-        review_scores_rating: parseFloat(formData.review_scores_rating),
-        number_of_reviews: parseInt(formData.number_of_reviews),
-      });
-      navigation.goBack();
-    } catch (error) {
-      console.log("Error adding listing:", error);
-      Alert.alert("Error", "Failed to create listing. Please try again.");
-    }
-    setLoading(false); // End loading
+    // Create a reference to Firebase storage with a unique filename
+    const storage = getStorage();
+    const imgRef = ref(storage, `files/${uuidv4()}`);
+
+    // Prepare the image as a blob
+    const uploadImage = async () => {
+      try {
+        const response = await fetch(imgUri);
+        const blob = await response.blob();
+
+        // Start the image upload task
+        const uploadTask = uploadBytesResumable(imgRef, blob);
+
+        setUploading(true); // Start upload state
+
+        // Track the upload progress
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Calculate and update progress
+            const progressValue = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setProgress(progressValue);
+          },
+          (error) => {
+            Alert.alert('Upload failed', error.message);
+            setUploading(false);
+          },
+          async () => {
+            // On successful upload, get the download URL
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            setDownloadUrl(url);
+            setUploading(false); // End upload state
+            Alert.alert('Upload successful');
+          }
+        );
+      } catch (error) {
+        Alert.alert('Upload failed', error.message);
+      }
+    };
+
+    uploadImage();
+  };
+
+  const selectImage = () => {
+    launchImageLibrary({ mediaType: 'photo' }, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorCode) {
+        console.log('ImagePicker Error: ', response.errorMessage);
+      } else {
+        setImgUri(response.assets[0].uri); // Set the selected image URI
+      }
+    });
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.formContainer}>
-          <Text style={styles.title}>Create a Listing</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={formData.name}
-            onChangeText={(text) => setFormData({ ...formData, name: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="City"
-            value={formData.city}
-            onChangeText={(text) => setFormData({ ...formData, city: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Country"
-            value={formData.country}
-            onChangeText={(text) => setFormData({ ...formData, country: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Accommodates"
-            keyboardType="numeric"
-            value={formData.accommodates}
-            onChangeText={(text) => setFormData({ ...formData, accommodates: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Bedrooms"
-            keyboardType="numeric"
-            value={formData.bedrooms}
-            onChangeText={(text) => setFormData({ ...formData, bedrooms: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Beds"
-            keyboardType="numeric"
-            value={formData.beds}
-            onChangeText={(text) => setFormData({ ...formData, beds: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Bathrooms"
-            keyboardType="numeric"
-            value={formData.bathrooms}
-            onChangeText={(text) => setFormData({ ...formData, bathrooms: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Price (in EUR)"
-            keyboardType="numeric"
-            value={formData.price}
-            onChangeText={(text) => setFormData({ ...formData, price: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Image URL"
-            value={formData.medium_url}
-            onChangeText={(text) => setFormData({ ...formData, medium_url: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Host Name"
-            value={formData.host_name}
-            onChangeText={(text) => setFormData({ ...formData, host_name: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Host Picture URL"
-            value={formData.host_picture_url}
-            onChangeText={(text) => setFormData({ ...formData, host_picture_url: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Host Since (YYYY-MM-DD)"
-            value={formData.host_since}
-            onChangeText={(text) => setFormData({ ...formData, host_since: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Description"
-            value={formData.description}
-            onChangeText={(text) => setFormData({ ...formData, description: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Space"
-            value={formData.space}
-            onChangeText={(text) => setFormData({ ...formData, space: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Neighborhood Overview"
-            value={formData.neighborhood_overview}
-            onChangeText={(text) => setFormData({ ...formData, neighborhood_overview: text })}
-          />
-          
-          <View style={styles.amenitiesContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Add Amenity"
-              value={amenity}
-              onChangeText={setAmenity}
-            />
-            <Pressable onPress={handleAddAmenity} style={styles.addButton}>
-              <Text style={styles.buttonText}>Add</Text>
-            </Pressable>
-          </View>
-          
-          <Text style={styles.amenitiesText}>Amenities: {formData.amenities.join(', ')}</Text>
+    <View style={{ padding: 20, marginTop: 20  }}>
+      <Button title="Select Image" onPress={selectImage} />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Review Score (0-100)"
-            keyboardType="numeric"
-            value={formData.review_scores_rating}
-            onChangeText={(text) => setFormData({ ...formData, review_scores_rating: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Number of Reviews"
-            keyboardType="numeric"
-            value={formData.number_of_reviews}
-            onChangeText={(text) => setFormData({ ...formData, number_of_reviews: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Room Type"
-            value={formData.room_type}
-            onChangeText={(text) => setFormData({ ...formData, room_type: text })}
-          />
+      {imgUri && (
+        <Image
+          source={{ uri: imgUri }}
+          style={{ width: 200, height: 200, marginTop: 20 }}
+          resizeMode="contain"
+        />
+      )}
 
-          <Pressable 
-            onPress={handleFormSubmit} 
-            style={styles.submitButton} 
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Create Listing</Text>
-            )}
-          </Pressable>
+      <Button title="Upload" onPress={handleClick} disabled={uploading} />
+
+      {uploading && (
+        <Text style={{ marginTop: 10 }}>Uploading... {progress.toFixed(2)}%</Text>
+      )}
+
+      {downloadUrl && (
+        <View style={{ marginTop: 20 }}>
+          <Text>Uploaded Image:</Text>
+          <Image
+            source={{ uri: downloadUrl }}
+            style={{ width: 200, height: 200 }}
+            resizeMode="contain"
+          />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      )}
+    </View>
   );
-};
+}
 
-export default ListingForm;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f0f4f7',
-    padding: 20,
-  },
-  scrollContainer: {
-    alignItems: 'center',
-    flexGrow: 1,
-  },
-  formContainer: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 15,
-    width: '100%',
-    maxWidth: 350,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  input: {
-    backgroundColor: '#f2f2f2',
-    padding: 12,
-    borderRadius: 10,
-    marginVertical: 10,
-    fontSize: 16,
-  },
-  addButton: {
-    backgroundColor: '#003580',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  amenitiesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  amenitiesText: {
-    fontSize: 14,
-    marginVertical: 10,
-  },
-  submitButton: {
-    backgroundColor: '#003580',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+export default FirebaseImageUpload;

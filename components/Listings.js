@@ -70,14 +70,15 @@ const Listings = () => {
           {/* Listing details */}
           <View style={styles.listingDetails}>
             <Text style={styles.listingName}>{item.name}</Text>
+            <Text style={styles.roomType}>{item.location}</Text>
             <View style={styles.ratingContainer}>
               <Ionicons name="star" size={16} color="#FFD700" />
-              <Text style={styles.ratingText}>{item.review_scores_rating / 20}</Text>
+              <Text style={styles.ratingText}>{item.rating}</Text>
             </View>
           </View>
-          <Text style={styles.roomType}>{item.room_type}</Text>
+
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>€ {item.price}</Text>
+            <Text style={styles.price}>€{item.price}</Text>
             <Text style={styles.pricePerNight}>/ night</Text>
           </View>
         </TouchableOpacity>
@@ -85,6 +86,7 @@ const Listings = () => {
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -115,6 +117,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  roomType: {
+    marginTop: 4,
+    color: "#666",
+  },
   ratingContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -125,8 +131,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
   },
-  roomType: {
+  description: {
     marginTop: 4,
+    fontSize: 14,
     color: "#666",
   },
   priceContainer: {
