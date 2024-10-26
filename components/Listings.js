@@ -71,15 +71,11 @@ const Listings = () => {
           <View style={styles.listingDetails}>
             <Text style={styles.listingName}>{item.name}</Text>
             <Text style={styles.roomType}>{item.location}</Text>
-            <View style={styles.ratingContainer}>
-              <Ionicons name="star" size={16} color="#FFD700" />
-              <Text style={styles.ratingText}>{item.rating}</Text>
-            </View>
           </View>
 
           <View style={styles.priceContainer}>
             <Text style={styles.price}>€{item.price}</Text>
-            <Text style={styles.pricePerNight}>/ night</Text>
+            <Text style={styles.pricePerNight}>/ Duration</Text>
           </View>
         </TouchableOpacity>
       ))}
@@ -119,16 +115,6 @@ const styles = StyleSheet.create({
   },
   roomType: {
     marginTop: 4,
-    color: "#666",
-  },
-  ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 4,
-  },
-  ratingText: {
-    marginLeft: 4,
-    fontSize: 14,
     color: "#666",
   },
   description: {

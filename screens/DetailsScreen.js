@@ -10,27 +10,16 @@ const DetailsScreen = ({ route }) => {
       <ScrollView style={styles.container}>
         {/* Main image */}
         <Image source={{ uri: item.medium_url }} style={styles.image} />
-
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{item.name}</Text>
-          <Text style={styles.location}>Private room in {item.location}</Text>
-          <Text style={styles.guests}>
-            {item.max_guests} guest{item.max_guests > 1 ? 's' : ''} • Minimum stay: {item.min_booking_days} days
-          </Text>
-
-          {/* Reviews */}
-          <View style={styles.reviewsContainer}>
-            <Ionicons name="star" size={16} color="#FFD700" />
-            <Text style={styles.reviewsText}>
-              {item.rating} • {item.number_of_reviews} reviews
-            </Text>
-          </View>
+          <Text style={styles.location}>Field Abailable in {item.location}</Text>
 
           {/* Host info */}
           <View style={styles.hostContainer}>
             <View style={styles.hostInfo}>
               <Text style={styles.hostedBy}>Hosted by {item.host_name}</Text>
               <Text style={styles.hostContact}>Contact: {item.host_contact}</Text>
+            <Text style={styles.hostContact}>{item.email}</Text>
             </View>
           </View>
 
@@ -47,13 +36,18 @@ const DetailsScreen = ({ route }) => {
             <Text style={styles.detailLabel}>Availability:</Text>
             <Text style={styles.detailValue}>{item.availability}</Text>
           </View>
-
           <View style={styles.detailsContainer}>
-            <Text style={styles.detailLabel}>Accessibility:</Text>
-            <Text style={styles.detailValue}>{item.accessibility}</Text>
+            <Text style={styles.detailLabel}>soil type:</Text>
+            <Text style={styles.detailValue}>{item.soil_type}</Text>
           </View>
-          
-          {/* Other details can be added similarly */}
+          <View style={styles.detailsContainer}>
+            <Text style={styles.detailLabel}>sunlight exposure:</Text>
+            <Text style={styles.detailValue}>{item.sunlight_exposure}</Text>
+          </View>
+          <View  style={[styles.detailsContainer, { marginBottom: 30 }]}>
+            <Text style={styles.detailLabel}>tools included:</Text>
+            <Text style={styles.detailValue}>{item.tools_included}</Text>
+          </View>
         </View>
       </ScrollView>
 
@@ -94,27 +88,10 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: '#666',
   },
-  guests: {
-    marginTop: 8,
-    color: '#666',
-  },
-  reviewsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  reviewsText: {
-    marginLeft: 4,
-    fontSize: 14,
-    color: '#666',
-  },
   hostContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 16,
-  },
-  hostInfo: {
-    marginLeft: 16,
   },
   hostedBy: {
     fontSize: 16,
