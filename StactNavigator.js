@@ -1,18 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "./screens/HomeScreen";
-import { AntDesign } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
-import SavedScreen from "./screens/SavedScreen";
-import BookingScreen from "./screens/BookingScreen";
-import ProfileScreen from "./screens/ProfileScreen";
 import { NavigationContainer } from "@react-navigation/native";
-import LoginScreen from "./screens/LoginScreen";
-import RegisterScreen from "./screens/RegisterScreen";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+import BookingScreen from "./screens/BookingScreen";
 import DetailsScreen from "./screens/DetailsScreen";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import MapSearchScreen from "./screens/MapSearchScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import SavedScreen from "./screens/SavedScreen";
+
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -87,6 +86,26 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+      <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Saved"
+          component={SavedScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Map/Search"
+          component={MapSearchScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: false }}
+      />
         <Stack.Screen
           name="Login"
           component={LoginScreen}
@@ -105,7 +124,7 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Details"
           component={DetailsScreen}
-          options={{ headerShown: true }}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
