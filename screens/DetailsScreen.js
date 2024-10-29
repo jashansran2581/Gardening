@@ -1,9 +1,56 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/core';
+import { collection, addDoc, query, where, getDocs, Timestamp, onSnapshot, doc, setDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase';
 
 const DetailsScreen = ({ route }) => {
   const { item } = route.params;
+  const navigation = useNavigation();
+  const currentUserEmail = auth.currentUser?.email;
+
+  // Helper function to generate unique chat ID based on participants
+  const generateChatId = (email1, email2) => [email1, email2].sort().join(':');
+
+  // Function to check if a chat already exists
+  const checkExistingChat = async (chatId) => {
+    const chatQuery = query(
+      collection(db, 'messages'),
+      where('__name__', '==', chatId)
+    );
+    const chatSnapshot = await getDocs(chatQuery);
+    return !chatSnapshot.empty;
+  };
+
+  const handleMessageOwner = async () => {
+    const chatId = generateChatId(currentUserEmail, item.host_email);
+    const initialMessage = {
+      participants: [currentUserEmail, item.host_email],
+      listingName: item.name,
+      message: 'Hello! I’m interested in your listing.',
+      sender: currentUserEmail,
+      createdAt: Timestamp.fromDate(new Date()),
+    };
+
+    try {
+      const chatExists = await checkExistingChat(chatId);
+
+      if (!chatExists) {
+        // Create a new chat document with a unique ID
+        await setDoc(doc(db, 'messages', chatId), initialMessage);
+      }
+
+      // Navigate to the Messages screen
+      navigation.navigate('Messages', {
+        ownerEmail: item.host_email,
+        listingName: item.name,
+      });
+    } catch (error) {
+      console.error('Error sending message: ', error);
+      Alert.alert('Error', 'Unable to send message. Please try again later.');
+    }
+  };
 
   return (
     <View style={styles.screenContainer}>
@@ -12,14 +59,15 @@ const DetailsScreen = ({ route }) => {
         <Image source={{ uri: item.medium_url }} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{item.name}</Text>
-          <Text style={styles.location}>Field Abailable in {item.location}</Text>
+          <Text style={styles.location}>Field Available in {item.location}</Text>
 
           {/* Host info */}
           <View style={styles.hostContainer}>
             <View style={styles.hostInfo}>
               <Text style={styles.hostedBy}>Hosted by {item.host_name}</Text>
-              <Text style={styles.hostContact}>Contact: {item.host_contact}</Text>
-            <Text style={styles.hostContact}>{item.email}</Text>
+              <Text style={styles.hostContact}>
+                Contact: {item.host_email}
+              </Text>
             </View>
           </View>
 
@@ -36,18 +84,26 @@ const DetailsScreen = ({ route }) => {
             <Text style={styles.detailLabel}>Availability:</Text>
             <Text style={styles.detailValue}>{item.availability}</Text>
           </View>
+
           <View style={styles.detailsContainer}>
-            <Text style={styles.detailLabel}>soil type:</Text>
+            <Text style={styles.detailLabel}>Soil Type:</Text>
             <Text style={styles.detailValue}>{item.soil_type}</Text>
           </View>
+
           <View style={styles.detailsContainer}>
-            <Text style={styles.detailLabel}>sunlight exposure:</Text>
+            <Text style={styles.detailLabel}>Sunlight Exposure:</Text>
             <Text style={styles.detailValue}>{item.sunlight_exposure}</Text>
           </View>
-          <View  style={[styles.detailsContainer, { marginBottom: 30 }]}>
-            <Text style={styles.detailLabel}>tools included:</Text>
+
+          <View style={[styles.detailsContainer, { marginBottom: 30 }]}>
+            <Text style={styles.detailLabel}>Tools Included:</Text>
             <Text style={styles.detailValue}>{item.tools_included}</Text>
           </View>
+
+          <TouchableOpacity style={styles.messageButton} onPress={handleMessageOwner}>
+            <Ionicons name="chatbubble-outline" size={20} color="white" />
+            <Text style={styles.messageButtonText}>Message Owner</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
@@ -63,7 +119,6 @@ const DetailsScreen = ({ route }) => {
 };
 
 export default DetailsScreen;
-
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -136,5 +191,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  messageButton: {
+    backgroundColor: '#003580',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    marginTop: 20,
+    borderRadius: 8,
+  },
+  messageButtonText: {
+    color: 'white',
+    marginLeft: 8,
+    fontSize: 16,
   },
 });

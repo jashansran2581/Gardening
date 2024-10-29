@@ -155,7 +155,7 @@ const ListingForm = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Price (in EUR)"
+            placeholder="Price: "
             keyboardType="numeric"
             value={formData.price}
             onChangeText={(text) => setFormData({ ...formData, price: text })}
