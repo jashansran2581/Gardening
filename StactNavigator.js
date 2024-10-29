@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/HomeScreen";
 import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import SavedScreen from "./screens/SavedScreen";
-import MapScreen from "./screens/MapScreen";
+import BookingScreen from "./screens/BookingScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
@@ -14,7 +14,6 @@ import CreateListingScreen from "./screens/CreateListingScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import MessagesScreen from "./screens/MessageScreen";
 import ChatListScreen from "./screens/ChatListScreen";
-import MapSearchScreen from "./screens/MapSearchScreen";
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -49,10 +48,9 @@ const StackNavigator = () => {
               ),
           }}
         />
-
         <Tab.Screen
-          name="MapScreen"
-          component={MapScreen}
+          name="Bookings"
+          component={BookingScreen}
           options={{
             tabBarLabel: "Map",
             headerShown: false,
@@ -64,7 +62,6 @@ const StackNavigator = () => {
               ),
           }}
         />
-
         <Tab.Screen
           name="Profile"
           component={ProfileScreen}
@@ -79,7 +76,6 @@ const StackNavigator = () => {
               ),
           }}
         />
-
       </Tab.Navigator>
     );
   }
