@@ -237,3 +237,5 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
 });
+
+export default MapScreen;

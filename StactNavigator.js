@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/HomeScreen";
 import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import SavedScreen from "./screens/SavedScreen";
-import BookingScreen from "./screens/BookingScreen";
+import MapScreen from "./screens/MapScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
@@ -51,8 +51,8 @@ const StackNavigator = () => {
         />
 
         <Tab.Screen
-          name="Bookings"
-          component={MapSearchScreen}
+          name="MapScreen"
+          component={MapScreen}
           options={{
             tabBarLabel: "Map",
             headerShown: false,
