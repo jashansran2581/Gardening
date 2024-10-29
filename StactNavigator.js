@@ -14,6 +14,7 @@ import CreateListingScreen from "./screens/CreateListingScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import MessagesScreen from "./screens/MessageScreen";
 import ChatListScreen from "./screens/ChatListScreen";
+import MapSearchScreen from "./screens/MapSearchScreen";
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -48,9 +49,10 @@ const StackNavigator = () => {
               ),
           }}
         />
+
         <Tab.Screen
           name="Bookings"
-          component={BookingScreen}
+          component={MapSearchScreen}
           options={{
             tabBarLabel: "Map",
             headerShown: false,
@@ -62,6 +64,7 @@ const StackNavigator = () => {
               ),
           }}
         />
+
         <Tab.Screen
           name="Profile"
           component={ProfileScreen}
@@ -76,6 +79,7 @@ const StackNavigator = () => {
               ),
           }}
         />
+
       </Tab.Navigator>
     );
   }
