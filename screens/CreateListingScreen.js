@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView, Pressable, SafeAreaView, Alert, ActivityIndicator, Image } from 'react-native';
-import { db, storage, auth } from '../firebase';
-import { collection, addDoc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import * as ImagePicker from 'expo-image-picker';
-import * as Crypto from 'expo-crypto';
 import { useNavigation } from '@react-navigation/native';
+import * as Crypto from 'expo-crypto';
+import * as ImagePicker from 'expo-image-picker';
+import { addDoc, collection } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { auth, db, storage } from '../firebase';
 
 const ListingForm = () => {
   const [formData, setFormData] = useState({
@@ -155,7 +155,11 @@ const ListingForm = () => {
           />
           <TextInput
             style={styles.input}
+<<<<<<< Updated upstream
             placeholder="Price (in EUR)"
+=======
+            placeholder="Price"
+>>>>>>> Stashed changes
             keyboardType="numeric"
             value={formData.price}
             onChangeText={(text) => setFormData({ ...formData, price: text })}
@@ -206,7 +210,7 @@ const ListingForm = () => {
             <Text style={styles.buttonText}>Pick an Image</Text>
           </Pressable>
           {image && <Image source={{ uri: image }} style={styles.previewImage} />}
-          {uploading && <Text>Uploading... {Math.round(uploadProgress)}%</Text>}
+          {uploading && <Text style={styles.uploadProgressText}>Uploading... {Math.round(uploadProgress)}%</Text>}
 
           <Pressable onPress={handleFormSubmit} style={styles.submitButton} disabled={loading}>
             {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Create Listing</Text>}
@@ -223,16 +227,17 @@ export default ListingForm;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f4f7',
+    backgroundColor: '#e8f5e9',
     padding: 20,
   },
   scrollContainer: {
-    alignItems: 'center',
-    flexGrow: 1,
+    paddingBottom: 20,
   },
   formContainer: {
     backgroundColor: '#fff',
+    borderRadius: 10,
     padding: 20,
+<<<<<<< Updated upstream
     borderRadius: 15,
     width: '100%',
     maxWidth: 350,
@@ -261,10 +266,94 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
+=======
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2e7d32',
+    marginBottom: 20,
+  },
+  input: {
+    height: 50,
+    borderColor: '#c8e6c9',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#2e7d32',
+  },
+  amenitiesContainer: {
+    marginBottom: 15,
+  },
+  amenityInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  amenityInput: {
+    flex: 1,
+    height: 50,
+    borderColor: '#c8e6c9',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  addButton: {
+    backgroundColor: '#2e7d32',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    marginLeft: 5,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  amenitiesList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10,
+  },
+  amenityChip: {
+    backgroundColor: '#d0f0c0',
+    borderRadius: 15,
+    padding: 10,
+    marginRight: 5,
+    marginBottom: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  amenityText: {
+    color: '#2e7d32',
+  },
+  removeButton: {
+    marginLeft: 5,
+  },
+  removeButtonText: {
+    color: '#d32f2f',
+  },
+  uploadButton: {
+    backgroundColor: '#2e7d32',
+    borderRadius: 5,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 10,
+>>>>>>> Stashed changes
   },
   previewImage: {
     width: '100%',
     height: 200,
+<<<<<<< Updated upstream
     marginVertical: 10,
   },
   submitButton: {
@@ -274,3 +363,25 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+=======
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  uploadProgressText: {
+    textAlign: 'center',
+    color: '#2e7d32',
+    marginTop: 5,
+  },
+  submitButton: {
+    backgroundColor: '#4caf50',
+    borderRadius: 5,
+    paddingVertical: 15,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+});
+>>>>>>> Stashed changes

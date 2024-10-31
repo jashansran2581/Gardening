@@ -1,6 +1,23 @@
+<<<<<<< Updated upstream
 import React from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+=======
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/core";
+import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
+import React from "react";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { auth, db } from "../firebase";
+>>>>>>> Stashed changes
 
 const DetailsScreen = ({ route }) => {
   const { item } = route.params;
@@ -62,31 +79,61 @@ const DetailsScreen = ({ route }) => {
   );
 };
 
+<<<<<<< Updated upstream
 export default DetailsScreen;
+=======
+>>>>>>> Stashed changes
 
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
+    backgroundColor: "#F5F5F5",
   },
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#FFFFFF",
   },
   image: {
+<<<<<<< Updated upstream
     width: '100%',
     height: 300,
     borderRadius: 8,
+=======
+    width: "100%",
+    height: 280,
+    borderRadius: 12,
+    marginBottom: 16,
+>>>>>>> Stashed changes
   },
   infoContainer: {
     marginTop: 16,
+    paddingHorizontal: 10,
   },
   title: {
+<<<<<<< Updated upstream
     fontSize: 24,
     fontWeight: 'bold',
   },
   location: {
     marginTop: 8,
     color: '#666',
+=======
+    fontSize: 26,
+    fontWeight: "600",
+    color: "#2D572C",
+  },
+  location: {
+    fontSize: 18,
+    color: "#6B8E23",
+    marginVertical: 8,
+  },
+  address: {
+    color: "#1E90FF",
+    textDecorationLine: "underline",
+    fontSize: 16,
+    marginVertical: 8,
+>>>>>>> Stashed changes
   },
   hostContainer: {
     flexDirection: 'row',
@@ -95,25 +142,41 @@ const styles = StyleSheet.create({
   },
   hostedBy: {
     fontSize: 16,
+<<<<<<< Updated upstream
     fontWeight: 'bold',
   },
   hostContact: {
     color: '#666',
+=======
+    fontWeight: "500",
+    color: "#4B5320",
+>>>>>>> Stashed changes
   },
   description: {
-    marginTop: 16,
-    fontSize: 16,
+    marginTop: 10,
+    fontSize: 15,
+    color: "#333333",
+    lineHeight: 22,
   },
   detailsContainer: {
-    marginTop: 16,
+    marginVertical: 10,
   },
   detailLabel: {
     fontSize: 16,
+<<<<<<< Updated upstream
     fontWeight: 'bold',
   },
   detailValue: {
     fontSize: 16,
     color: '#666',
+=======
+    fontWeight: "600",
+    color: "#4B5320",
+  },
+  detailValue: {
+    fontSize: 15,
+    color: "#555555",
+>>>>>>> Stashed changes
     marginTop: 4,
   },
   footer: {
@@ -121,6 +184,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     borderTopWidth: 1,
+<<<<<<< Updated upstream
     borderTopColor: '#eee',
   },
   price: {
@@ -136,5 +200,42 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+=======
+    borderTopColor: "#E8E8E8",
+    backgroundColor: "#FFFFFF",
+  },
+  price: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#2D572C",
+  },
+  reserveButton: {
+    backgroundColor: "#6B8E23",
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  reserveText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  messageButton: {
+    backgroundColor: "#2D572C",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  messageButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    marginLeft: 8,
+>>>>>>> Stashed changes
   },
 });
+
+
+export default DetailsScreen;

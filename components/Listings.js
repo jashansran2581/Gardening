@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { collection, deleteDoc, doc, onSnapshot, setDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { db } from '../firebase';
-import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 const Listings = () => {
   const [listings, setListings] = useState([]);
@@ -63,7 +63,7 @@ const Listings = () => {
             <Ionicons
               name={savedListingsIds.includes(item.id) ? "heart" : "heart-outline"}
               size={24}
-              color={savedListingsIds.includes(item.id) ? "red" : "#000"}
+              color={savedListingsIds.includes(item.id) ? "#E57373" : "#4CAF50"} // green heart for unsaved
             />
           </TouchableOpacity>
           
@@ -75,7 +75,7 @@ const Listings = () => {
 
           <View style={styles.priceContainer}>
             <Text style={styles.price}>€{item.price}</Text>
-            <Text style={styles.pricePerNight}>/ Duration</Text>
+            <Text style={styles.pricePerNight}> / Duration</Text>
           </View>
         </TouchableOpacity>
       ))}
@@ -87,53 +87,66 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#F0F4F8",
   },
   listing: {
     marginBottom: 24,
-    position: "relative",
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
   },
   image: {
     width: "100%",
     height: 200,
-    borderRadius: 8,
   },
   heartIcon: {
     position: "absolute",
     top: 10,
     right: 10,
-    backgroundColor: "#fff",
-    borderRadius: 15,
-    padding: 4,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    shadowOffset: { width: 1, height: 2 },
   },
   listingDetails: {
-    marginTop: 8,
+    padding: 12,
+    backgroundColor: "#FFFFFF",
   },
   listingName: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#4CAF50",
   },
   roomType: {
     marginTop: 4,
-    color: "#666",
+    fontSize: 14,
+    color: "#777777",
   },
   description: {
     marginTop: 4,
     fontSize: 14,
-    color: "#666",
+    color: "#777777",
   },
   priceContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 4,
+    padding: 12,
   },
   price: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#388E3C",
   },
   pricePerNight: {
     fontSize: 14,
-    color: "#666",
+    color: "#666666",
   },
 });
 

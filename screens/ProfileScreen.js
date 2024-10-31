@@ -1,23 +1,22 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Pressable,
-  TextInput,
-  ScrollView,
-  Image,
-  Alert,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import { auth, db, storage } from "../firebase";
+import { useNavigation } from "@react-navigation/native";
+import * as Crypto from 'expo-crypto'; // <-- Import expo-crypto for generating unique IDs
+import * as ImagePicker from 'expo-image-picker';
 import { signOut } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import * as ImagePicker from 'expo-image-picker';  
-import { v4 as uuidv4 } from "uuid";
-import { useNavigation } from "@react-navigation/native";
-import * as Crypto from 'expo-crypto';  // <-- Import expo-crypto for generating unique IDs
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  Image,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { auth, db, storage } from "../firebase";
 
 const ProfileScreen = () => {
   const [userData, setUserData] = useState({
@@ -190,7 +189,7 @@ const ProfileScreen = () => {
                 <Text style={styles.buttonText}>Upload Profile Picture</Text>
               </Pressable>
 
-              {uploading && <Text>Uploading... {Math.round(uploadProgress)}%</Text>}
+              {uploading && <Text style={styles.uploadProgressText}>Uploading... {Math.round(uploadProgress)}%</Text>}
 
               <Text style={styles.label}>First Name</Text>
               <TextInput
@@ -264,59 +263,84 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#E8F5E9",
   },
   scrollContainer: {
     padding: 20,
   },
   profileContainer: {
     alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
+    color: "#2E7D32",
     marginBottom: 20,
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderColor: "#4CAF50",
+    borderWidth: 2,
     marginBottom: 20,
   },
   uploadButton: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#8BC34A",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     marginBottom: 20,
+    width: "80%",
   },
   buttonText: {
     color: "#fff",
     textAlign: "center",
+    fontWeight: "bold",
+  },
+  uploadProgressText: {
+    color: "#388E3C",
+    marginBottom: 10,
   },
   label: {
     fontSize: 16,
-    fontWeight: "bold",
+    color: "#2E7D32",
     marginBottom: 5,
+    marginTop: 10,
   },
   input: {
-    width: "100%",
-    padding: 10,
+    width: "80%",
+    borderColor: "#A5D6A7",
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    marginBottom: 20,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 15,
+    backgroundColor: "#F1F8E9",
   },
   button: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#66BB6A",
     padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
-    width: "100%",
+    borderRadius: 8,
+    width: "80%",
+    marginTop: 20,
   },
   signOutButton: {
-    backgroundColor: "#FF3B30",
+    backgroundColor: "#D32F2F",
     padding: 10,
-    borderRadius: 5,
-    width: "100%",
+    borderRadius: 8,
+    width: "80%",
+    marginTop: 10,
+  },
+  text: {
+    marginTop: 10,
+    color: "#4CAF50",
+    textAlign: "center",
   },
 });
 

@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TextInput, Pressable } from "react-native";
-import React, { useState, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons"; // For Google Icon
 import { useNavigation } from "@react-navigation/native";
-import { auth, db, signInWithGooglePopup } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { Ionicons } from "@expo/vector-icons"; // For Google Icon
+import React, { useEffect, useState } from "react";
+import { KeyboardAvoidingView, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import { auth, db, signInWithGooglePopup } from "../firebase";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
+
   const login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -55,7 +56,7 @@ const LoginScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView style={styles.innerContainer} behavior="padding">
         <View style={styles.headerContainer}>
           <Text style={styles.title}>Sign-in</Text>
         </View>
@@ -66,7 +67,7 @@ const LoginScreen = () => {
             value={email}
             onChangeText={(text) => setEmail(text)}
             placeholder="Enter Email"
-            placeholderTextColor={"gray"}
+            placeholderTextColor={"#A5D6A7"} // Light green for placeholder
             style={styles.input}
           />
         </View>
@@ -78,7 +79,7 @@ const LoginScreen = () => {
             onChangeText={(text) => setPassword(text)}
             secureTextEntry={true}
             placeholder="Enter Password"
-            placeholderTextColor={"gray"}
+            placeholderTextColor={"#A5D6A7"} // Light green for placeholder
             style={styles.input}
           />
         </View>
@@ -102,7 +103,7 @@ const LoginScreen = () => {
 
         {/* Google Login */}
         <Pressable onPress={handleGoogleSignIn} style={styles.googleButton}>
-          <Ionicons name="logo-google" size={24} color="black" />
+          <Ionicons name="logo-google" size={24} color="#388E3C" />
           <Text style={styles.googleButtonText}>Continue with Google</Text>
         </Pressable>
       </KeyboardAvoidingView>
@@ -115,58 +116,65 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    padding: 10,
+    backgroundColor: "#E8F5E9",
+    padding: 16,
     alignItems: "center",
+  },
+  innerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    width: '100%',
   },
   headerContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 50,
+    marginBottom: 20,
   },
   title: {
-    color: "#003580",
-    fontSize: 28,
+    color: "#388E3C",
+    fontSize: 32,
     fontWeight: "700",
   },
   inputContainer: {
-    marginTop: 20,
-    width: 300,
+    marginVertical: 10,
+    width: '100%',
   },
   label: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "gray",
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#4CAF50",
   },
   input: {
-    fontSize: 18,
-    borderBottomColor: "gray",
+    fontSize: 16,
+    borderBottomColor: "#388E3C",
     borderBottomWidth: 1,
     marginVertical: 10,
-    width: "100%",
+    paddingVertical: 5,
+    color: "#388E3C",
   },
   loginButton: {
-    width: 200,
-    backgroundColor: "#003580",
+    width: "100%",
+    backgroundColor: "#388E3C",
     padding: 15,
-    borderRadius: 7,
-    marginTop: 50,
+    borderRadius: 8,
+    marginTop: 20,
     alignItems: "center",
   },
   loginButtonText: {
     color: "white",
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: "bold",
   },
   signupTextContainer: {
-    marginTop: 20,
+    marginTop: 15,
+    alignItems: "center",
   },
   signupText: {
-    color: "gray",
-    fontSize: 17,
+    color: "#666",
+    fontSize: 16,
   },
   signupLink: {
-    color: "#003580",
+    color: "#388E3C",
     fontWeight: "600",
   },
   dividerContainer: {
@@ -177,25 +185,26 @@ const styles = StyleSheet.create({
   divider: {
     flex: 1,
     height: 1,
-    backgroundColor: "gray",
+    backgroundColor: "#A5D6A7",
   },
   orText: {
     marginHorizontal: 10,
-    color: "gray",
+    color: "#666",
   },
   googleButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
+    borderColor: "#A5D6A7",
+    borderRadius: 8,
     padding: 10,
     marginTop: 10,
-    width: 280,
+    width: "100%",
   },
   googleButtonText: {
     marginLeft: 10,
     fontSize: 16,
+    color: "#388E3C",
   },
 });

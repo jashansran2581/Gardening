@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import * as Location from 'expo-location';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
@@ -195,47 +196,79 @@ const MapSearchScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#f2f5f0',
   },
   map: {
-    height: 250,
+    height: 300,
     width: '100%',
-    marginBottom: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginVertical: 10,
   },
   searchContainer: {
-    padding: 10,
+    padding: 15,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    marginHorizontal: 15,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   searchInput: {
-    height: 40,
-    borderColor: 'gray',
+    height: 45,
+    borderColor: '#b0c4b1',
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderRadius: 8,
+    paddingHorizontal: 12,
     backgroundColor: 'white',
   },
   tagContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    padding: 10,
+    padding: 15,
+    marginHorizontal: 10,
   },
   chip: {
     margin: 5,
+    backgroundColor: '#e1f0e5',
+    borderColor: '#7cb78c',
+    borderWidth: 1,
   },
   selectedChip: {
-    backgroundColor: 'green',
+    backgroundColor: '#7cb78c',
   },
   selectedChipText: {
     color: 'white',
   },
   list: {
-    maxHeight: 200,
+    maxHeight: 220,
+    marginHorizontal: 15,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+    paddingVertical: 10,
   },
   listItem: {
-    padding: 10,
+    padding: 12,
     borderBottomWidth: 1,
+<<<<<<< Updated upstream
     borderBottomColor: '#ccc',
   },
 });
 
+=======
+    borderBottomColor: '#e2e2e2',
+  }
+});
+
+ 
+>>>>>>> Stashed changes
 export default MapSearchScreen;

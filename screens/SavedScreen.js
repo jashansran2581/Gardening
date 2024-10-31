@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { db } from '../firebase';
-import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { db } from '../firebase';
 
 const SavedScreen = () => {
   const [savedListings, setSavedListings] = useState([]);
@@ -32,7 +32,6 @@ const SavedScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Conditional Rendering: If there are no saved listings, show this message */}
       {savedListings.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>No saved listings yet</Text>
@@ -53,9 +52,13 @@ const SavedScreen = () => {
               </TouchableOpacity>
 
               {/* Listing details */}
-              <Text style={styles.listingName}>{item.name}</Text>
-              <Text style={styles.roomType}>{item.room_type}</Text>
-              <Text style={styles.price}>€ {item.price} / night</Text>
+              <View style={styles.listingDetails}>
+                <Text style={styles.listingName}>{item.name}</Text>
+                <Text style={styles.roomType}>{item.room_type}</Text>
+                <View style={styles.priceContainer}>
+                  <Text style={styles.price}>€ {item.price} / night</Text>
+                </View>
+              </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -68,35 +71,58 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    marginTop: '12%', // Add marginTop of 4%
+    backgroundColor: "#F0F4F8",
+    marginTop: '12%',
   },
   listing: {
-    marginBottom: 16,
+    marginBottom: 24,
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 200,
-    borderRadius: 8,
+  },
+  heartIcon: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    shadowOffset: { width: 1, height: 2 },
+  },
+  listingDetails: {
+    padding: 12,
+    backgroundColor: "#FFFFFF",
   },
   listingName: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 8,
+    fontWeight: "bold",
+    color: "#4CAF50",
   },
   roomType: {
-    fontSize: 16,
-    color: '#666',
+    marginTop: 4,
+    fontSize: 14,
+    color: "#777777",
+  },
+  priceContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 4,
   },
   price: {
-    fontSize: 16,
-    color: '#000',
-    fontWeight: 'bold',
-    marginTop: 4,
-  },
-  heartIcon: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#388E3C",
   },
   emptyContainer: {
     flex: 1,

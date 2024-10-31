@@ -1,18 +1,18 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Pressable,
-  TextInput,
-  Alert
-} from 'react-native';
-import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import React, { useState } from 'react';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View
+} from 'react-native';
 import { auth, db } from '../firebase';
-import { setDoc, doc } from 'firebase/firestore';
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -56,7 +56,7 @@ const RegisterScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior="padding">
+      <KeyboardAvoidingView behavior="padding" style={styles.innerContainer}>
         <View style={styles.headerContainer}>
           <Text style={styles.title}>Register</Text>
           <Text style={styles.subtitle}>Create an Account</Text>
@@ -68,7 +68,7 @@ const RegisterScreen = () => {
             value={email}
             onChangeText={(text) => setEmail(text)}
             placeholder="Enter your email"
-            placeholderTextColor={"gray"}
+            placeholderTextColor={"#999"}
             style={styles.input}
           />
         </View>
@@ -80,7 +80,7 @@ const RegisterScreen = () => {
             onChangeText={(text) => setPassword(text)}
             secureTextEntry={true}
             placeholder="Enter Password"
-            placeholderTextColor={"gray"}
+            placeholderTextColor={"#999"}
             style={styles.input}
           />
         </View>
@@ -91,7 +91,7 @@ const RegisterScreen = () => {
             value={phone}
             onChangeText={(text) => setPhone(text)}
             placeholder="Enter your Phone No"
-            placeholderTextColor={"gray"}
+            placeholderTextColor={"#999"}
             style={styles.input}
           />
         </View>
@@ -113,65 +113,71 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-    padding: 10,
+    backgroundColor: "#E8F5E9",
+    padding: 16,
     alignItems: "center",
+  },
+  innerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    width: '100%',
   },
   headerContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 100,
+    marginBottom: 20,
   },
   title: {
-    color: "#003580",
-    fontSize: 28,
+    color: "#388E3C",
+    fontSize: 32,
     fontWeight: "700",
   },
   subtitle: {
     marginTop: 15,
     fontSize: 18,
     fontWeight: "500",
+    color: "#388E3C",
   },
   inputContainer: {
-    marginTop: 20,
-    width: 300,
+    marginVertical: 10,
+    width: '100%',
   },
   label: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "gray",
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#4CAF50",
   },
   input: {
-    fontSize: 18,
-    borderBottomColor: "gray",
+    fontSize: 16,
+    borderBottomColor: "#388E3C",
     borderBottomWidth: 1,
     marginVertical: 10,
-    width: "100%",
+    paddingVertical: 5,
+    color: "#388E3C",
   },
   registerButton: {
-    width: 200,
-    backgroundColor: "#003580", // Button color
+    width: "100%",
+    backgroundColor: "#388E3C",
     padding: 15,
-    borderRadius: 7,
-    marginTop: 50,
+    borderRadius: 8,
+    marginTop: 20,
     alignItems: "center",
   },
   registerButtonText: {
-    textAlign: "center",
     color: "white",
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: "bold",
   },
   signInTextContainer: {
-    marginTop: 20,
+    marginTop: 15,
+    alignItems: "center",
   },
   signInText: {
-    textAlign: "center",
-    color: "gray",
-    fontSize: 17,
+    color: "#666",
+    fontSize: 16,
   },
   signInLink: {
-    color: "#003580",
+    color: "#388E3C",
     fontWeight: "600",
   },
 });
