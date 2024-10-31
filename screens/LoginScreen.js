@@ -67,7 +67,7 @@ const LoginScreen = () => {
             value={email}
             onChangeText={(text) => setEmail(text)}
             placeholder="Enter Email"
-            placeholderTextColor={"#A5D6A7"} // Light green for placeholder
+            placeholderTextColor={"#A5D6A7"}
             style={styles.input}
           />
         </View>
@@ -79,7 +79,7 @@ const LoginScreen = () => {
             onChangeText={(text) => setPassword(text)}
             secureTextEntry={true}
             placeholder="Enter Password"
-            placeholderTextColor={"#A5D6A7"} // Light green for placeholder
+            placeholderTextColor={"#A5D6A7"}
             style={styles.input}
           />
         </View>

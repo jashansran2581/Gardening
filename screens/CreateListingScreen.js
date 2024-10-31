@@ -155,11 +155,7 @@ const ListingForm = () => {
           />
           <TextInput
             style={styles.input}
-<<<<<<< Updated upstream
-            placeholder="Price (in EUR)"
-=======
             placeholder="Price"
->>>>>>> Stashed changes
             keyboardType="numeric"
             value={formData.price}
             onChangeText={(text) => setFormData({ ...formData, price: text })}
@@ -237,36 +233,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 20,
-<<<<<<< Updated upstream
-    borderRadius: 15,
-    width: '100%',
-    maxWidth: 350,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  input: {
-    backgroundColor: '#f2f2f2',
-    padding: 12,
-    borderRadius: 10,
-    marginVertical: 10,
-    fontSize: 16,
-  },
-  uploadButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: '600',
-=======
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
@@ -348,22 +314,10 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: 'center',
     marginTop: 10,
->>>>>>> Stashed changes
   },
   previewImage: {
     width: '100%',
     height: 200,
-<<<<<<< Updated upstream
-    marginVertical: 10,
-  },
-  submitButton: {
-    backgroundColor: '#003580',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-});
-=======
     borderRadius: 10,
     marginTop: 10,
   },
@@ -384,4 +338,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
->>>>>>> Stashed changes

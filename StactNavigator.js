@@ -1,22 +1,17 @@
 import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-<<<<<<< Updated upstream
-=======
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { StyleSheet } from "react-native";
 import BookingScreen from "./screens/BookingScreen";
-import ChatListScreen from "./screens/ChatListScreen";
 import CreateListingScreen from "./screens/CreateListingScreen";
 import DetailsScreen from "./screens/DetailsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
-import MessagesScreen from "./screens/MessageScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import SavedScreen from "./screens/SavedScreen";
->>>>>>> Stashed changes
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();

@@ -2,11 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
-<<<<<<< Updated upstream
-  View,
-  TextInput,
-=======
->>>>>>> Stashed changes
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
@@ -14,22 +9,13 @@ import {
 } from "react-native";
 
 const ExploreHeader = () => {
-<<<<<<< Updated upstream
- 
-  const navigation = useNavigation(); // Initialize navigation
-=======
   const navigation = useNavigation();
->>>>>>> Stashed changes
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.actionRow}>
           <TouchableOpacity
-<<<<<<< Updated upstream
-            style={styles.filterBtn}
-            onPress={() => navigation.navigate('CreateListing')} // Navigate to CreateListing
-=======
             style={styles.iconBtn}
             onPress={() => navigation.navigate("ChatList")}
           >
@@ -40,7 +26,6 @@ const ExploreHeader = () => {
           <TouchableOpacity
             style={styles.iconBtn}
             onPress={() => navigation.navigate("CreateListing")}
->>>>>>> Stashed changes
           >
             <Ionicons name="create" size={24} color="#4CAF50" />
           </TouchableOpacity>
@@ -52,15 +37,8 @@ const ExploreHeader = () => {
 
 const styles = StyleSheet.create({
   safeArea: {
-<<<<<<< Updated upstream
-    flex: 1,
-    backgroundColor: '#fff',
-    marginBottom: "-145%",
-    marginTop: "6%"
-=======
     backgroundColor: "#F0F4F8",
     paddingTop: 16,
->>>>>>> Stashed changes
   },
   container: {
     backgroundColor: "#FFFFFF",
@@ -78,13 +56,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
-<<<<<<< Updated upstream
-  filterBtn: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#A2A0A2',
-    borderRadius: 24,
-=======
   iconBtn: {
     padding: 12,
     backgroundColor: "#FFFFFF",
@@ -97,7 +68,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 3 },
     alignItems: "center",
     justifyContent: "center",
->>>>>>> Stashed changes
   },
 });
 

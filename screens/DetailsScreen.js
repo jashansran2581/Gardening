@@ -1,23 +1,12 @@
-<<<<<<< Updated upstream
-import React from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-=======
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/core";
-import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import React from "react";
 import {
-  Alert,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { auth, db } from "../firebase";
->>>>>>> Stashed changes
 
 const DetailsScreen = ({ route }) => {
   const { item } = route.params;
@@ -79,10 +68,6 @@ const DetailsScreen = ({ route }) => {
   );
 };
 
-<<<<<<< Updated upstream
-export default DetailsScreen;
-=======
->>>>>>> Stashed changes
 
 const styles = StyleSheet.create({
   screenContainer: {
@@ -95,30 +80,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   image: {
-<<<<<<< Updated upstream
-    width: '100%',
-    height: 300,
-    borderRadius: 8,
-=======
     width: "100%",
     height: 280,
     borderRadius: 12,
     marginBottom: 16,
->>>>>>> Stashed changes
   },
   infoContainer: {
     marginTop: 16,
     paddingHorizontal: 10,
   },
   title: {
-<<<<<<< Updated upstream
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  location: {
-    marginTop: 8,
-    color: '#666',
-=======
     fontSize: 26,
     fontWeight: "600",
     color: "#2D572C",
@@ -133,7 +104,6 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     fontSize: 16,
     marginVertical: 8,
->>>>>>> Stashed changes
   },
   hostContainer: {
     flexDirection: 'row',
@@ -142,15 +112,8 @@ const styles = StyleSheet.create({
   },
   hostedBy: {
     fontSize: 16,
-<<<<<<< Updated upstream
-    fontWeight: 'bold',
-  },
-  hostContact: {
-    color: '#666',
-=======
     fontWeight: "500",
     color: "#4B5320",
->>>>>>> Stashed changes
   },
   description: {
     marginTop: 10,
@@ -163,20 +126,12 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 16,
-<<<<<<< Updated upstream
-    fontWeight: 'bold',
-  },
-  detailValue: {
-    fontSize: 16,
-    color: '#666',
-=======
     fontWeight: "600",
     color: "#4B5320",
   },
   detailValue: {
     fontSize: 15,
     color: "#555555",
->>>>>>> Stashed changes
     marginTop: 4,
   },
   footer: {
@@ -184,23 +139,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     borderTopWidth: 1,
-<<<<<<< Updated upstream
-    borderTopColor: '#eee',
-  },
-  price: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  reserveButton: {
-    backgroundColor: '#ff5a5f',
-    borderRadius: 8,
-    padding: 12,
-  },
-  reserveText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-=======
     borderTopColor: "#E8E8E8",
     backgroundColor: "#FFFFFF",
   },
@@ -233,7 +171,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     marginLeft: 8,
->>>>>>> Stashed changes
   },
 });
 

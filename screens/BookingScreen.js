@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/core';
 import * as Location from 'expo-location';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
@@ -259,16 +258,9 @@ const styles = StyleSheet.create({
   listItem: {
     padding: 12,
     borderBottomWidth: 1,
-<<<<<<< Updated upstream
-    borderBottomColor: '#ccc',
-  },
-});
-
-=======
     borderBottomColor: '#e2e2e2',
   }
 });
 
  
->>>>>>> Stashed changes
 export default MapSearchScreen;
