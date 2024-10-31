@@ -5,10 +5,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { StyleSheet } from "react-native";
 import BookingScreen from "./screens/BookingScreen";
+import ChatListScreen from "./screens/ChatListScreen";
 import CreateListingScreen from "./screens/CreateListingScreen";
 import DetailsScreen from "./screens/DetailsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
+import MessagesScreen from "./screens/MessageScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import SavedScreen from "./screens/SavedScreen";
@@ -106,8 +108,18 @@ const StackNavigator = () => {
         />
         <Stack.Screen
           name="CreateListing"
-          component={CreateListingScreen}
+          component={CreateListingScreen} // Add the new screen here
           options={{ headerShown: false, title: "Create Listing" }}
+        />
+        <Stack.Screen
+          name="Messages"
+          component={MessagesScreen}
+          options={{ title: "Chat" }}
+        />
+        <Stack.Screen
+          name="ChatList"
+          component={ChatListScreen}
+          options={{ title: "Chats" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -115,5 +127,4 @@ const StackNavigator = () => {
 };
 
 export default StackNavigator;
-
 const styles = StyleSheet.create({});
