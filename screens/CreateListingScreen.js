@@ -11,19 +11,19 @@ const ListingForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     location: '',
-    address: '', // New address field
+    address: '',
     description: '',
     price: '',
-    amenities: '',
+    amenities: [],  // amenities as an array
     host_name: '',
-    host_email: '', // Replaces host_contact and email
+    host_email: '',
     availability: '',
     soil_type: '',
     sunlight_exposure: '',
     tools_included: '',
     medium_url: '',
   });
-
+  const [newAmenity, setNewAmenity] = useState('');
   const [image, setImage] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -97,6 +97,23 @@ const ListingForm = () => {
     }
   };
 
+  const addAmenity = () => {
+    if (newAmenity.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        amenities: [...prev.amenities, newAmenity.trim()],
+      }));
+      setNewAmenity(''); // Clear the input
+    }
+  };
+
+  const removeAmenity = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      amenities: prev.amenities.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleFormSubmit = async () => {
     if (!formData.name || !formData.location || !formData.address || !formData.description || !formData.price) {
       Alert.alert('Missing Information', 'Please fill in all required fields.');
@@ -160,12 +177,34 @@ const ListingForm = () => {
             value={formData.price}
             onChangeText={(text) => setFormData({ ...formData, price: text })}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Amenities"
-            value={formData.amenities}
-            onChangeText={(text) => setFormData({ ...formData, amenities: text })}
-          />
+
+          {/* Amenities Section */}
+          <View style={styles.amenitiesContainer}>
+            <Text style={styles.inputLabel}>Amenities</Text>
+            <View style={styles.amenityInputContainer}>
+              <TextInput
+                style={styles.amenityInput}
+                placeholder="Enter an amenity"
+                value={newAmenity}
+                onChangeText={setNewAmenity}
+              />
+              <Pressable onPress={addAmenity} style={styles.addButton}>
+                <Text style={styles.addButtonText}>Add</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.amenitiesList}>
+              {formData.amenities.map((amenity, index) => (
+                <View key={index} style={styles.amenityChip}>
+                  <Text style={styles.amenityText}>{amenity}</Text>
+                  <Pressable onPress={() => removeAmenity(index)} style={styles.removeButton}>
+                    <Text style={styles.removeButtonText}>x</Text>
+                  </Pressable>
+                </View>
+              ))}
+            </View>
+          </View>
+
           <TextInput
             style={styles.input}
             placeholder="Host Name"
@@ -202,6 +241,7 @@ const ListingForm = () => {
             value={formData.tools_included}
             onChangeText={(text) => setFormData({ ...formData, tools_included: text })}
           />
+
           <Pressable onPress={pickImage} style={styles.uploadButton}>
             <Text style={styles.buttonText}>Pick an Image</Text>
           </Pressable>
@@ -219,7 +259,6 @@ const ListingForm = () => {
 
 export default ListingForm;
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -235,42 +274,96 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 15,
     width: '100%',
-    maxWidth: 350,
   },
   title: {
     fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 15,
-    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   input: {
     backgroundColor: '#f2f2f2',
-    padding: 12,
+    padding: 10,
     borderRadius: 10,
-    marginVertical: 10,
-    fontSize: 16,
+    marginBottom: 10,
   },
-  uploadButton: {
+  amenitiesContainer: {
+    marginVertical: 10,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 5,
+  },
+  amenityInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  amenityInput: {
+    flex: 1,
+    backgroundColor: '#f2f2f2',
+    padding: 10,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  addButton: {
     backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 10,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+  amenitiesList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     marginTop: 10,
   },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: '600',
+  amenityChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E0E0E0',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 15,
+    marginRight: 5,
+    marginBottom: 5,
+  },
+  amenityText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  removeButton: {
+    marginLeft: 5,
+  },
+  removeButtonText: {
+    fontSize: 14,
+    color: '#FF0000',
+  },
+  uploadButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 10,
   },
   previewImage: {
     width: '100%',
     height: 200,
+    resizeMode: 'cover',
+    borderRadius: 10,
     marginVertical: 10,
   },
   submitButton: {
-    backgroundColor: '#003580',
+    backgroundColor: '#007BFF',
     padding: 15,
     borderRadius: 10,
-    marginTop: 20,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

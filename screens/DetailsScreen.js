@@ -1,57 +1,69 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/core';
-import { collection, addDoc, query, where, getDocs, Timestamp, onSnapshot, doc, setDoc } from 'firebase/firestore';
-import { db, auth } from '../firebase';
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Alert,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/core";
+import { collection, doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
+import { db, auth } from "../firebase";
 
 const DetailsScreen = ({ route }) => {
   const { item } = route.params;
   const navigation = useNavigation();
   const currentUserEmail = auth.currentUser?.email;
 
-  // Helper function to generate unique chat ID based on participants
-  const generateChatId = (email1, email2) => [email1, email2].sort().join(':');
+  // Generate a unique chat ID based on both participants' emails
+  const generateChatId = (email1, email2) => [email1, email2].sort().join(":");
 
-  // Function to check if a chat already exists
-  const checkExistingChat = async (chatId) => {
-    const chatQuery = query(
-      collection(db, 'messages'),
-      where('__name__', '==', chatId)
-    );
-    const chatSnapshot = await getDocs(chatQuery);
-    return !chatSnapshot.empty;
-  };
-
+  // Check if chat already exists; create if not
   const handleMessageOwner = async () => {
     const chatId = generateChatId(currentUserEmail, item.host_email);
-    const initialMessage = {
-      participants: [currentUserEmail, item.host_email],
-      listingName: item.name,
-      message: 'Hello! I’m interested in your listing.',
-      sender: currentUserEmail,
-      createdAt: Timestamp.fromDate(new Date()),
-    };
 
     try {
-      const chatExists = await checkExistingChat(chatId);
+      const chatDoc = doc(db, "messages", chatId);
+      const chatSnapshot = await getDoc(chatDoc);
 
-      if (!chatExists) {
-        // Create a new chat document with a unique ID
-        await setDoc(doc(db, 'messages', chatId), initialMessage);
+      if (!chatSnapshot.exists()) {
+        await setDoc(chatDoc, {
+          participants: [currentUserEmail, item.host_email],
+          listingName: item.name,
+          createdAt: Timestamp.fromDate(new Date()),
+        });
       }
 
-      // Navigate to the Messages screen
-      navigation.navigate('Messages', {
-        ownerEmail: item.host_email,
+      // Navigate to Messages screen with relevant chat details
+      navigation.navigate("Messages", {
+        chatId,
         listingName: item.name,
+        ownerEmail: item.host_email,
       });
     } catch (error) {
-      console.error('Error sending message: ', error);
-      Alert.alert('Error', 'Unable to send message. Please try again later.');
+      console.error("Error creating chat: ", error);
+      Alert.alert("Error", "Unable to start chat. Please try again.");
     }
   };
-
+  const handleAddressPress = () => {
+    Alert.alert(
+      "Navigate to Map",
+      "Do you want to go back to the map with this listing's pins?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => navigation.navigate("Bookings", { item }),
+        },
+      ]
+    );
+  };
   return (
     <View style={styles.screenContainer}>
       <ScrollView style={styles.container}>
@@ -59,15 +71,17 @@ const DetailsScreen = ({ route }) => {
         <Image source={{ uri: item.medium_url }} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{item.name}</Text>
-          <Text style={styles.location}>Field Available in {item.location}</Text>
-
+          <Text style={styles.location}>
+            Field Available in {item.location}
+          </Text>
+          <Text style={styles.address} onPress={handleAddressPress}>
+            {item.address}
+          </Text>
           {/* Host info */}
           <View style={styles.hostContainer}>
             <View style={styles.hostInfo}>
               <Text style={styles.hostedBy}>Hosted by {item.host_name}</Text>
-              <Text style={styles.hostContact}>
-                Contact: {item.host_email}
-              </Text>
+              <Text style={styles.hostContact}>Contact: {item.host_email}</Text>
             </View>
           </View>
 
@@ -77,7 +91,11 @@ const DetailsScreen = ({ route }) => {
           {/* Additional details */}
           <View style={styles.detailsContainer}>
             <Text style={styles.detailLabel}>Amenities:</Text>
-            <Text style={styles.detailValue}>{item.amenities}</Text>
+            <Text style={styles.detailValue}>
+              {Array.isArray(item.amenities)
+                ? item.amenities.join(", ")
+                : item.amenities}
+            </Text>
           </View>
 
           <View style={styles.detailsContainer}>
@@ -100,7 +118,10 @@ const DetailsScreen = ({ route }) => {
             <Text style={styles.detailValue}>{item.tools_included}</Text>
           </View>
 
-          <TouchableOpacity style={styles.messageButton} onPress={handleMessageOwner}>
+          <TouchableOpacity
+            style={styles.messageButton}
+            onPress={handleMessageOwner}
+          >
             <Ionicons name="chatbubble-outline" size={20} color="white" />
             <Text style={styles.messageButtonText}>Message Owner</Text>
           </TouchableOpacity>
@@ -109,7 +130,7 @@ const DetailsScreen = ({ route }) => {
 
       {/* Footer with price and Reserve button */}
       <View style={styles.footer}>
-        <Text style={styles.price}>€{item.price} / night</Text>
+        <Text style={styles.price}>€{item.price} / Duration</Text>
         <TouchableOpacity style={styles.reserveButton}>
           <Text style={styles.reserveText}>Reserve</Text>
         </TouchableOpacity>
@@ -128,7 +149,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   image: {
-    width: '100%',
+    width: "100%",
     height: 300,
     borderRadius: 8,
   },
@@ -137,23 +158,23 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   location: {
     marginTop: 8,
-    color: '#666',
+    color: "#666",
   },
   hostContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 16,
   },
   hostedBy: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   hostContact: {
-    color: '#666',
+    color: "#666",
   },
   description: {
     marginTop: 16,
@@ -164,46 +185,52 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   detailValue: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
     marginTop: 4,
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#eee',
+    borderTopColor: "#eee",
   },
   price: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   reserveButton: {
-    backgroundColor: '#ff5a5f',
+    backgroundColor: "#ff5a5f",
     borderRadius: 8,
     padding: 12,
   },
   reserveText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   messageButton: {
-    backgroundColor: '#003580',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#003580",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 12,
     marginTop: 20,
     borderRadius: 8,
   },
   messageButtonText: {
-    color: 'white',
+    color: "white",
     marginLeft: 8,
+    fontSize: 16,
+  },
+  address: {
+    color: "blue", // Indicate clickable
+    textDecorationLine: "underline", // Underline for link effect
+    marginTop: 16,
     fontSize: 16,
   },
 });
