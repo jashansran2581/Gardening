@@ -2,17 +2,19 @@ import { useNavigation } from '@react-navigation/core';
 import * as Location from 'expo-location';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Chip } from 'react-native-paper';
-import Listings from '../components/Listings';
+import { Chip, Text } from 'react-native-paper';
 import { db } from '../firebase';
 
+// Google Maps API key for geocoding and map services
 const GOOGLE_MAPS_API_KEY = "AIzaSyCEUcVpgXO8YU-AaNPSQdIu6Y6hiPvtgpU";
  
+// Available filter tags for garden listings
 const tags = ['Water Access', 'Fences', 'Mulch', 'Road Access'];
  
 const MapSearchScreen = () => {
+  // State management for user location, search, and filter functionality
   const [userLocation, setUserLocation] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [nearbyAddresses, setNearbyAddresses] = useState([]);
@@ -20,14 +22,17 @@ const MapSearchScreen = () => {
   const mapRef = useRef(null);
   const navigation = useNavigation();
 
+  // Request and set up user location on component mount
   useEffect(() => {
     (async () => {
+      // Request permission to access device location
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.error('Permission to access location was denied');
         return;
       }
  
+      // Get current device location and update state
       const location = await Location.getCurrentPositionAsync({});
       setUserLocation({
         latitude: location.coords.latitude,
@@ -36,6 +41,7 @@ const MapSearchScreen = () => {
     })();
   }, []);
  
+  // Fetch garden listings from Firestore and geocode their addresses
   const fetchAddresses = async () => {
     if (!userLocation) return;
   
@@ -43,7 +49,7 @@ const MapSearchScreen = () => {
       const addressesRef = collection(db, 'listings');
       let q = query(addressesRef);
 
-      // Apply multi-tag filtering with 'array-contains-any' only if tags are selected
+      // Apply amenity filters if tags are selected
       if (selectedTags.length > 0) {
         q = query(
           addressesRef,
@@ -54,10 +60,11 @@ const MapSearchScreen = () => {
       const querySnapshot = await getDocs(q);
       const addresses = [];
 
+      // Process each listing and geocode its address
       for (const doc of querySnapshot.docs) {
         const data = doc.data();
 
-        // Ensure each address includes all selected amenities
+        // Verify listing has all selected amenities
         const hasAllSelectedTags = selectedTags.every(tag =>
           data.amenities.includes(tag)
         );
@@ -66,6 +73,7 @@ const MapSearchScreen = () => {
         const address = data.address;
 
         if (address) {
+          // Geocode the address using Google Maps API
           const encodedAddress = encodeURIComponent(address);
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${GOOGLE_MAPS_API_KEY}`
@@ -74,6 +82,7 @@ const MapSearchScreen = () => {
           const result = await response.json();
           if (result.status === 'OK' && result.results.length > 0) {
             const location = result.results[0].geometry.location;
+            // Add geocoded listing to addresses array with all relevant data
             addresses.push({
               id: doc.id,
               name: data.name || "Unknown Name",
@@ -104,10 +113,12 @@ const MapSearchScreen = () => {
     }
   };
   
+  // Fetch addresses when user location or selected tags change
   useEffect(() => {
     fetchAddresses();
   }, [userLocation, selectedTags]);
 
+  // Handle address search functionality
   const searchAddress = async () => {
     if (!searchQuery.trim()) {
       Alert.alert("Error", "Please enter an address to search");
@@ -115,6 +126,7 @@ const MapSearchScreen = () => {
     }
  
     try {
+      // Geocode the searched address
       const encodedAddress = encodeURIComponent(searchQuery);
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${GOOGLE_MAPS_API_KEY}`
@@ -125,8 +137,8 @@ const MapSearchScreen = () => {
         const { lat, lng } = data.results[0].geometry.location;
         const newLocation = { latitude: lat, longitude: lng };
  
+        // Update map view to searched location
         setUserLocation(newLocation);
- 
         mapRef.current?.animateToRegion({
           latitude: lat,
           longitude: lng,
@@ -144,6 +156,7 @@ const MapSearchScreen = () => {
     }
   };
 
+  // Toggle filter tags selection
   const toggleTag = (tag) => {
     setSelectedTags(prevTags =>
       prevTags.includes(tag)
@@ -154,6 +167,7 @@ const MapSearchScreen = () => {
  
   return (
     <View style={styles.container}>
+      {/* Map display with markers for user location and garden listings */}
       <MapView
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
@@ -164,12 +178,14 @@ const MapSearchScreen = () => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         } : {
+          // Default to Calgary coordinates if user location not available
           latitude: 51.0447,
           longitude: -114.0719,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
       >
+        {/* User location marker */}
         {userLocation && (
           <Marker
             coordinate={userLocation}
@@ -177,6 +193,7 @@ const MapSearchScreen = () => {
             pinColor='blue'
           />
         )}
+        {/* Garden listing markers */}
         {nearbyAddresses.map((address) => (
           address.latitude && address.longitude && (
             <Marker
@@ -190,6 +207,7 @@ const MapSearchScreen = () => {
         ))}
       </MapView>
      
+      {/* Address search input */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -199,6 +217,8 @@ const MapSearchScreen = () => {
           onSubmitEditing={searchAddress}
         />
       </View>
+
+      {/* Filter tags */}
       <View style={styles.tagContainer}>
         {tags.map(tag => (
           <Chip
@@ -212,11 +232,67 @@ const MapSearchScreen = () => {
           </Chip>
         ))}
       </View>
-      <Listings />
+      {/* Listings component for displaying garden listings
+      <Listings /> */}
+      {/* Nearby Listings Section */}
+      <ScrollView style={styles.listingsContainer}>
+        {nearbyAddresses.length > 0 ? (
+          nearbyAddresses.map((listing) => (
+            <TouchableOpacity
+              key={listing.id}
+              style={styles.listingCard}
+              onPress={() => navigation.navigate('Details', { item: listing })}
+            >
+              <View style={styles.listingContent}>
+                <Image
+                  source={listing.medium_url ? { uri: listing.medium_url } : require('../assets/default-garden.jpg')}
+                  style={styles.listingImage}
+                />
+                <View style={styles.listingDetails}>
+                  <Text style={styles.listingName} numberOfLines={1}>
+                    {listing.name}
+                  </Text>
+                  <Text style={styles.listingAddress} numberOfLines={2}>
+                    {listing.address}
+                  </Text>
+                  <View style={styles.amenitiesContainer}>
+                    {Array.isArray(listing.amenities) && listing.amenities.length > 0 ? (
+                      <>
+                        {listing.amenities.slice(0, 3).map((amenity, index) => (
+                          <Text key={index} style={styles.amenityTag}>
+                            {amenity}
+                          </Text>
+                        ))}
+                        {listing.amenities.length > 3 && (
+                          <Text style={styles.amenityTag}>
+                            +{listing.amenities.length - 3}
+                          </Text>
+                        )}
+                      </>
+                    ) : (
+                      <Text style={styles.noAmenitiesText}>No amenities listed</Text>
+                    )}
+                  </View>
+                  <Text style={styles.listingPrice}>
+                    ${listing.price}/month
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))
+        ) : (
+          <View style={styles.noListingsContainer}>
+            <Text style={styles.noListingsText}>
+              No garden plots found in this area
+            </Text>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };
 
+// Styles for component layout and appearance
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -284,8 +360,83 @@ const styles = StyleSheet.create({
     padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#e2e2e2',
-  }
+  },
+  listingsContainer: {
+    flex: 1,
+    padding: 15,
+  },
+  listingCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    overflow: 'hidden',
+  },
+  listingContent: {
+    flexDirection: 'row',
+    padding: 12,
+  },
+  listingImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+  },
+  listingDetails: {
+    flex: 1,
+    marginLeft: 12,
+    justifyContent: 'space-between',
+  },
+  listingName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2c2c2c',
+    marginBottom: 4,
+  },
+  listingAddress: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 6,
+  },
+  amenitiesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginBottom: 6,
+  },
+  amenityTag: {
+    fontSize: 12,
+    color: '#7cb78c',
+    backgroundColor: '#e1f0e5',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  listingPrice: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#7cb78c',
+  },
+  noListingsContainer: {
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noListingsText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+  },
+  noAmenitiesText: {
+    fontSize: 12,
+    color: '#666',
+    fontStyle: 'italic',
+  },
 });
 
- 
 export default MapSearchScreen;
