@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import * as Location from 'expo-location';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useRef, useState } from 'react';
@@ -8,42 +9,46 @@ import Listings from '../components/Listings';
 import { db } from '../firebase';
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCEUcVpgXO8YU-AaNPSQdIu6Y6hiPvtgpU";
-
-
-const tags = ['Water Access', 'Fenced', 'Mulch', 'Road Access'];
-
+ 
+const tags = ['Water Access', 'Fences', 'Mulch', 'Road Access'];
+ 
 const MapSearchScreen = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [nearbyAddresses, setNearbyAddresses] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const mapRef = useRef(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.error('Permission to access location was denied');
         return;
       }
-
-      let location = await Location.getCurrentPositionAsync({});
+ 
+      const location = await Location.getCurrentPositionAsync({});
       setUserLocation({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
     })();
   }, []);
-
+ 
   const fetchAddresses = async () => {
     if (!userLocation) return;
-
+  
     try {
-      const addressesRef = collection(db, 'addresses');
+      const addressesRef = collection(db, 'listings');
       let q = query(addressesRef);
 
+      // Apply multi-tag filtering with 'array-contains-any' only if tags are selected
       if (selectedTags.length > 0) {
-        q = query(addressesRef, where('tags', 'array-contains-any', selectedTags));
+        q = query(
+          addressesRef,
+          where('amenities', 'array-contains-any', selectedTags)
+        );
       }
 
       const querySnapshot = await getDocs(q);
@@ -51,35 +56,54 @@ const MapSearchScreen = () => {
 
       for (const doc of querySnapshot.docs) {
         const data = doc.data();
-        const address = data.addresses; // Assuming 'address' field contains the full address
 
-        // Convert address to latitude and longitude using Google Geocoding API
-        const encodedAddress = encodeURIComponent(addresses);
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${GOOGLE_MAPS_API_KEY}`
+        // Ensure each address includes all selected amenities
+        const hasAllSelectedTags = selectedTags.every(tag =>
+          data.amenities.includes(tag)
         );
+        if (!hasAllSelectedTags) continue;
 
-        const result = await response.json();
-        if (result.status === 'OK' && result.results.length > 0) {
-          const location = result.results[0].geometry.location;
-          addresses.push({
-            id: doc.id,
-            name: data.name || "Unknown Name", // Use the name field if it exists
-            addresses,
-            latitude: location.lat,
-            longitude: location.lng,
-          });
-        } else {
-          console.warn(`Could not convert address "${addresses}" to coordinates.`);
+        const address = data.address;
+
+        if (address) {
+          const encodedAddress = encodeURIComponent(address);
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${GOOGLE_MAPS_API_KEY}`
+          );
+
+          const result = await response.json();
+          if (result.status === 'OK' && result.results.length > 0) {
+            const location = result.results[0].geometry.location;
+            addresses.push({
+              id: doc.id,
+              name: data.name || "Unknown Name",
+              address,
+              latitude: parseFloat(location.lat),
+              longitude: parseFloat(location.lng),
+              medium_url: data.medium_url || "",
+              location: data.location || "",
+              host_name: data.host_name || "",
+              host_email: data.host_email || "",
+              description: data.description || "",
+              amenities: data.amenities || "",
+              availability: data.availability || "",
+              soil_type: data.soil_type || "",
+              sunlight_exposure: data.sunlight_exposure || "",
+              tools_included: data.tools_included || "",
+              price: data.price || 0,
+            });
+          } else {
+            console.warn(`Could not convert address "${address}" to coordinates.`);
+          }
         }
       }
-
+  
       setNearbyAddresses(addresses);
     } catch (error) {
       console.error("Error fetching and geocoding addresses: ", error);
     }
   };
-
+  
   useEffect(() => {
     fetchAddresses();
   }, [userLocation, selectedTags]);
@@ -89,27 +113,27 @@ const MapSearchScreen = () => {
       Alert.alert("Error", "Please enter an address to search");
       return;
     }
-
+ 
     try {
       const encodedAddress = encodeURIComponent(searchQuery);
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${GOOGLE_MAPS_API_KEY}`
       );
       const data = await response.json();
-
+ 
       if (data.status === 'OK' && data.results.length > 0) {
         const { lat, lng } = data.results[0].geometry.location;
         const newLocation = { latitude: lat, longitude: lng };
-
+ 
         setUserLocation(newLocation);
-
+ 
         mapRef.current?.animateToRegion({
           latitude: lat,
           longitude: lng,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }, 1000);
-
+ 
         await fetchAddresses();
       } else {
         Alert.alert("Error", "Could not find the specified address");
@@ -127,7 +151,7 @@ const MapSearchScreen = () => {
         : [...prevTags, tag]
     );
   };
-
+ 
   return (
     <View style={styles.container}>
       <MapView
@@ -159,12 +183,13 @@ const MapSearchScreen = () => {
               key={address.id}
               coordinate={{ latitude: address.latitude, longitude: address.longitude }}
               title={address.name}
-              pinColor='red'
+              pinColor='green'
+              onPress={() => navigation.navigate('Details', { item: address })}
             />
           )
         ))}
       </MapView>
-      
+     
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
