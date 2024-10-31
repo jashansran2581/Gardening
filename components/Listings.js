@@ -63,7 +63,7 @@ const Listings = () => {
             <Ionicons
               name={savedListingsIds.includes(item.id) ? "heart" : "heart-outline"}
               size={24}
-              color={savedListingsIds.includes(item.id) ? "#E57373" : "#4CAF50"} // green heart for unsaved
+              color={savedListingsIds.includes(item.id) ? "#4CAF50" : "#4CAF50"} // green heart for unsaved
             />
           </TouchableOpacity>
           

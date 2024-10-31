@@ -48,7 +48,7 @@ const SavedScreen = () => {
 
               {/* Heart icon for unsaving */}
               <TouchableOpacity style={styles.heartIcon} onPress={() => unsaveListing(item)}>
-                <Ionicons name="heart" size={24} color="red" />
+                <Ionicons name="heart" size={24} color="#4CAF50" />
               </TouchableOpacity>
 
               {/* Listing details */}
