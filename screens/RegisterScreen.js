@@ -48,7 +48,7 @@ const RegisterScreen = () => {
       });
 
       // Optionally navigate to login or main screen after successful registration
-      navigation.navigate('Main'); // Change as needed
+      navigation.navigate('Main');
     }).catch(error => {
       Alert.alert("Registration Error", error.message);
     });

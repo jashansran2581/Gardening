@@ -232,8 +232,6 @@ const MapSearchScreen = () => {
           </Chip>
         ))}
       </View>
-      {/* Listings component for displaying garden listings
-      <Listings /> */}
       {/* Nearby Listings Section */}
       <ScrollView style={styles.listingsContainer}>
         {nearbyAddresses.length > 0 ? (
@@ -292,7 +290,6 @@ const MapSearchScreen = () => {
   );
 };
 
-// Styles for component layout and appearance
 const styles = StyleSheet.create({
   container: {
     flex: 1,
