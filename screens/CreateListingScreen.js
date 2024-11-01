@@ -11,19 +11,19 @@ const ListingForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     location: '',
-    address: '', // New address field
+    address: '',
     description: '',
     price: '',
-    amenities: '',
+    amenities: [],  // amenities as an array
     host_name: '',
-    host_email: '', // Replaces host_contact and email
+    host_email: '',
     availability: '',
     soil_type: '',
     sunlight_exposure: '',
     tools_included: '',
     medium_url: '',
   });
-
+  const [newAmenity, setNewAmenity] = useState('');
   const [image, setImage] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -97,6 +97,23 @@ const ListingForm = () => {
     }
   };
 
+  const addAmenity = () => {
+    if (newAmenity.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        amenities: [...prev.amenities, newAmenity.trim()],
+      }));
+      setNewAmenity(''); // Clear the input
+    }
+  };
+
+  const removeAmenity = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      amenities: prev.amenities.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleFormSubmit = async () => {
     if (!formData.name || !formData.location || !formData.address || !formData.description || !formData.price) {
       Alert.alert('Missing Information', 'Please fill in all required fields.');
@@ -155,17 +172,39 @@ const ListingForm = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Price"
+            placeholder="Price: "
             keyboardType="numeric"
             value={formData.price}
             onChangeText={(text) => setFormData({ ...formData, price: text })}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Amenities"
-            value={formData.amenities}
-            onChangeText={(text) => setFormData({ ...formData, amenities: text })}
-          />
+
+          {/* Amenities Section */}
+          <View style={styles.amenitiesContainer}>
+            <Text style={styles.inputLabel}>Amenities</Text>
+            <View style={styles.amenityInputContainer}>
+              <TextInput
+                style={styles.amenityInput}
+                placeholder="Enter an amenity"
+                value={newAmenity}
+                onChangeText={setNewAmenity}
+              />
+              <Pressable onPress={addAmenity} style={styles.addButton}>
+                <Text style={styles.addButtonText}>Add</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.amenitiesList}>
+              {formData.amenities.map((amenity, index) => (
+                <View key={index} style={styles.amenityChip}>
+                  <Text style={styles.amenityText}>{amenity}</Text>
+                  <Pressable onPress={() => removeAmenity(index)} style={styles.removeButton}>
+                    <Text style={styles.removeButtonText}>x</Text>
+                  </Pressable>
+                </View>
+              ))}
+            </View>
+          </View>
+
           <TextInput
             style={styles.input}
             placeholder="Host Name"
@@ -202,6 +241,7 @@ const ListingForm = () => {
             value={formData.tools_included}
             onChangeText={(text) => setFormData({ ...formData, tools_included: text })}
           />
+
           <Pressable onPress={pickImage} style={styles.uploadButton}>
             <Text style={styles.buttonText}>Pick an Image</Text>
           </Pressable>
@@ -218,7 +258,6 @@ const ListingForm = () => {
 };
 
 export default ListingForm;
-
 
 const styles = StyleSheet.create({
   container: {

@@ -14,6 +14,11 @@ import MessagesScreen from "./screens/MessageScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import SavedScreen from "./screens/SavedScreen";
+import DetailsScreen from "./screens/DetailsScreen";
+import CreateListingScreen from "./screens/CreateListingScreen";
+import { NavigationContainer } from "@react-navigation/native";
+import MessagesScreen from "./screens/MessageScreen";
+import ChatListScreen from "./screens/ChatListScreen";
 const StackNavigator = () => {
   const Tab = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
@@ -110,6 +115,16 @@ const StackNavigator = () => {
           name="CreateListing"
           component={CreateListingScreen} // Add the new screen here
           options={{ headerShown: false, title: "Create Listing" }}
+        />
+        <Stack.Screen
+          name="Messages"
+          component={MessagesScreen}
+          options={{ title: "Chat" }}
+        />
+        <Stack.Screen
+          name="ChatList"
+          component={ChatListScreen}
+          options={{ title: "Chats" }}
         />
         <Stack.Screen
           name="Messages"

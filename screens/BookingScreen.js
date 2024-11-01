@@ -6,10 +6,12 @@ import { Alert, Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Chip, Text } from 'react-native-paper';
 import { db } from '../firebase';
+import { useNavigation } from '@react-navigation/core';
 
 // Google Maps API key for geocoding and map services
 const GOOGLE_MAPS_API_KEY = "AIzaSyCEUcVpgXO8YU-AaNPSQdIu6Y6hiPvtgpU";
  
+
 // Available filter tags for garden listings
 const tags = ['Water Access', 'Fences', 'Mulch', 'Road Access'];
  
@@ -49,7 +51,7 @@ const MapSearchScreen = () => {
       const addressesRef = collection(db, 'listings');
       let q = query(addressesRef);
 
-      // Apply amenity filters if tags are selected
+      // Apply multi-tag filtering with 'array-contains-any' only if tags are selected
       if (selectedTags.length > 0) {
         q = query(
           addressesRef,
@@ -64,7 +66,7 @@ const MapSearchScreen = () => {
       for (const doc of querySnapshot.docs) {
         const data = doc.data();
 
-        // Verify listing has all selected amenities
+        // Ensure each address includes all selected amenities
         const hasAllSelectedTags = selectedTags.every(tag =>
           data.amenities.includes(tag)
         );
@@ -83,6 +85,7 @@ const MapSearchScreen = () => {
           if (result.status === 'OK' && result.results.length > 0) {
             const location = result.results[0].geometry.location;
             // Add geocoded listing to addresses array with all relevant data
+
             addresses.push({
               id: doc.id,
               name: data.name || "Unknown Name",
@@ -289,7 +292,7 @@ const MapSearchScreen = () => {
     </View>
   );
 };
-
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -437,3 +440,4 @@ const styles = StyleSheet.create({
 });
 
 export default MapSearchScreen;
+

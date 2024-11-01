@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
+  View,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
@@ -9,12 +10,13 @@ import {
 } from "react-native";
 
 const ExploreHeader = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation(); // Initialize navigation
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.actionRow}>
+          {/* Messages Icon */}
           <TouchableOpacity
             style={styles.iconBtn}
             onPress={() => navigation.navigate("ChatList")}
@@ -25,7 +27,8 @@ const ExploreHeader = () => {
           {/* Create Listing Icon */}
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => navigation.navigate("CreateListing")}
+            onPress={() => navigation.navigate('CreateListing')} // Navigate to CreateListing
+
           >
             <Ionicons name="create" size={24} color="#4CAF50" />
           </TouchableOpacity>

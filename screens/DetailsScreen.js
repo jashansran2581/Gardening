@@ -10,7 +10,55 @@ import {
 
 const DetailsScreen = ({ route }) => {
   const { item } = route.params;
+  const navigation = useNavigation();
+  const currentUserEmail = auth.currentUser?.email;
 
+  // Generate a unique chat ID based on both participants' emails
+  const generateChatId = (email1, email2) => [email1, email2].sort().join(":");
+
+  // Check if chat already exists; create if not
+  const handleMessageOwner = async () => {
+    const chatId = generateChatId(currentUserEmail, item.host_email);
+
+    try {
+      const chatDoc = doc(db, "messages", chatId);
+      const chatSnapshot = await getDoc(chatDoc);
+
+      if (!chatSnapshot.exists()) {
+        await setDoc(chatDoc, {
+          participants: [currentUserEmail, item.host_email],
+          listingName: item.name,
+          createdAt: Timestamp.fromDate(new Date()),
+        });
+      }
+
+      // Navigate to Messages screen with relevant chat details
+      navigation.navigate("Messages", {
+        chatId,
+        listingName: item.name,
+        ownerEmail: item.host_email,
+      });
+    } catch (error) {
+      console.error("Error creating chat: ", error);
+      Alert.alert("Error", "Unable to start chat. Please try again.");
+    }
+  };
+  const handleAddressPress = () => {
+    Alert.alert(
+      "Navigate to Map",
+      "Do you want to go back to the map with this listing's pins?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => navigation.navigate("Bookings", { item }),
+        },
+      ]
+    );
+  };
   return (
     <View style={styles.screenContainer}>
       <ScrollView style={styles.container}>
@@ -18,14 +66,17 @@ const DetailsScreen = ({ route }) => {
         <Image source={{ uri: item.medium_url }} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{item.name}</Text>
-          <Text style={styles.location}>Field Abailable in {item.location}</Text>
-
+          <Text style={styles.location}>
+            Field Available in {item.location}
+          </Text>
+          <Text style={styles.address} onPress={handleAddressPress}>
+            {item.address}
+          </Text>
           {/* Host info */}
           <View style={styles.hostContainer}>
             <View style={styles.hostInfo}>
               <Text style={styles.hostedBy}>Hosted by {item.host_name}</Text>
-              <Text style={styles.hostContact}>Contact: {item.host_contact}</Text>
-            <Text style={styles.hostContact}>{item.email}</Text>
+              <Text style={styles.hostContact}>Contact: {item.host_email}</Text>
             </View>
           </View>
 
@@ -35,31 +86,46 @@ const DetailsScreen = ({ route }) => {
           {/* Additional details */}
           <View style={styles.detailsContainer}>
             <Text style={styles.detailLabel}>Amenities:</Text>
-            <Text style={styles.detailValue}>{item.amenities}</Text>
+            <Text style={styles.detailValue}>
+              {Array.isArray(item.amenities)
+                ? item.amenities.join(", ")
+                : item.amenities}
+            </Text>
           </View>
 
           <View style={styles.detailsContainer}>
             <Text style={styles.detailLabel}>Availability:</Text>
             <Text style={styles.detailValue}>{item.availability}</Text>
           </View>
+
           <View style={styles.detailsContainer}>
-            <Text style={styles.detailLabel}>soil type:</Text>
+            <Text style={styles.detailLabel}>Soil Type:</Text>
             <Text style={styles.detailValue}>{item.soil_type}</Text>
           </View>
+
           <View style={styles.detailsContainer}>
-            <Text style={styles.detailLabel}>sunlight exposure:</Text>
+            <Text style={styles.detailLabel}>Sunlight Exposure:</Text>
             <Text style={styles.detailValue}>{item.sunlight_exposure}</Text>
           </View>
-          <View  style={[styles.detailsContainer, { marginBottom: 30 }]}>
-            <Text style={styles.detailLabel}>tools included:</Text>
+
+          <View style={[styles.detailsContainer, { marginBottom: 30 }]}>
+            <Text style={styles.detailLabel}>Tools Included:</Text>
             <Text style={styles.detailValue}>{item.tools_included}</Text>
           </View>
+
+          <TouchableOpacity
+            style={styles.messageButton}
+            onPress={handleMessageOwner}
+          >
+            <Ionicons name="chatbubble-outline" size={20} color="white" />
+            <Text style={styles.messageButtonText}>Message Owner</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
       {/* Footer with price and Reserve button */}
       <View style={styles.footer}>
-        <Text style={styles.price}>€{item.price} / night</Text>
+        <Text style={styles.price}>€{item.price} / Duration</Text>
         <TouchableOpacity style={styles.reserveButton}>
           <Text style={styles.reserveText}>Reserve</Text>
         </TouchableOpacity>
@@ -106,8 +172,8 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   hostContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 16,
   },
   hostedBy: {
@@ -135,8 +201,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     padding: 16,
     borderTopWidth: 1,
     borderTopColor: "#E8E8E8",
